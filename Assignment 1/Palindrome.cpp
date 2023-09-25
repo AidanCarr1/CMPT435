@@ -21,6 +21,11 @@ public:
         itemName = itemNameInput;
         next = nullptr;
     }
+
+    void setNext(Node* newNext){
+        next = newNext;
+    }
+
 };
 
 
@@ -60,6 +65,53 @@ public:
         string popping = top->itemName;
         top = top->next;
         return popping;
+    }
+};
+
+class Queue{
+
+public:
+    
+    //Attributes
+    Node* head;
+    Node* tail;
+
+    //Constructor
+    Queue(){
+        head = nullptr;
+        tail = nullptr;
+    }
+
+    //METHODS
+    //return true if Empty
+    bool isEmpty(){
+        if (head == nullptr){
+            return true;
+        }
+        return false;
+    }
+
+    //enqueue/add to back of queue
+    void enqueue(Node newTail){
+        //add a head if it is the first in line
+        if(isEmpty()){
+            head = &newTail;
+        }
+        //fix this line!!!
+        //tail->next = &newTail;
+        tail->next->setNext(&newTail);
+        tail = &newTail;
+    }
+
+    //dequeue/retrieve from front of queue
+    string dequeue(){
+        //cant pop if there is nothing to pop
+        if(isEmpty()){
+            return "EMPTY STACK";
+        }
+        string dequeuing = head->itemName;
+        head = head->next;
+        return dequeuing;
     }
 };
 
@@ -104,7 +156,7 @@ int main () {
     if (itemsFile.is_open()){
         
         //assign each line to element in the array
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 1; i++) {
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
             std::cout << magicItems[i] << '\n';
@@ -119,11 +171,15 @@ int main () {
     //go through every magic item
     string item;
     Stack myStack;
+    Queue myQueue;
+
     for (int i = 0; i < 666; i++) {
         item = magicItems[i];
 
-        //clear the stack
+        //clear the stack and queue
         myStack.top = nullptr;
+        myQueue.head = nullptr;
+        myQueue.tail = nullptr;
 
         //add letter to stack and queue (appropriately)
         for (int j = 0; j < item.length(); j++){
@@ -140,6 +196,11 @@ int main () {
                 std::cout << (myStack.top)->itemName << '\n';
 
                 //enqueue character to queue
+                Node myQueueNode(character);
+                myQueue.enqueue(myQueueNode);
+                //test line:
+                std::cout << (myQueue.tail)->itemName << '\n';
+
             }         
         }
 
