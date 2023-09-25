@@ -2,9 +2,12 @@
 // September 18, 2023
 // Palindrome main file
 
+//Compiled using g++
+
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cctype>
 using namespace std;
 
 
@@ -33,7 +36,7 @@ public:
         top = nullptr;
     }
 
-    //Methods
+    //METHODS
     //return true if Empty
     bool isEmpty(){
         if (top == nullptr){
@@ -101,30 +104,43 @@ int main () {
     if (itemsFile.is_open()){
         
         //assign each line to element in the array
-        for (int i = 0; i < 666; i++) {
+        for (int i = 0; i < 6; i++) {
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
             std::cout << magicItems[i] << '\n';
         }
     }
 
-    
-
     else{
         std::cout << "Couldnt open file. \n";
     }
-    
+
+
+    //go through every magic item
     string item;
+    Stack myStack;
     for (int i = 0; i < 666; i++) {
         item = magicItems[i];
 
-        //create stack
-
-        //create queue
+        //clear the stack
+        myStack.top = nullptr;
 
         //add letter to stack and queue (appropriately)
-        for (int i = 0; i < item.length(); i++){
+        for (int j = 0; j < item.length(); j++){
+            
+            if(magicItems[i][j] != ' '){
+                
+                //convert current character to an uppercase string
+                string character(1,toupper(magicItems[i][j]));
+                
+                //push character to stack
+                Node myStackNode(character);
+                myStack.push(myStackNode);
+                //test line:
+                std::cout << (myStack.top)->itemName << '\n';
 
+                //enqueue character to queue
+            }         
         }
 
         //compare
