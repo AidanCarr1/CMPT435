@@ -7,7 +7,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-//#include <cctype>
+#include <cctype>
+#include <time.h>
 using namespace std;
 
 
@@ -19,27 +20,28 @@ void swap(string items[], int position1, int position2){
 }
 
 void shuffle(string items[]){
+    srand(time(NULL)); //RNG seed
+//FIX find actual length    
     int length = 6;
     for(int i = length-1; i > 0; i--){
         int randomIndex;
-        randomIndex = rand() % i+1;
+        randomIndex = rand() % i;
         swap(items,i,randomIndex);
     }
-
 }
 
 
 int main () {
 
     ifstream itemsFile;
-    itemsFile.open("magicitems.txt");
+    itemsFile.open("letters.txt");
     string magicItems[6]; 
 
     string item;
     string currentLine;
     if (itemsFile.is_open()){
         
-        //assign each line to element in the array
+        //assign each line to an element in the array
         for (int i = 0; i < 6; i++) {
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
@@ -55,6 +57,7 @@ int main () {
     shuffle(magicItems);
 
     //Shuffle test print
+    std::cout << "-------" << '\n';    
     for (int i = 0; i < 6; i++) {
         std::cout << magicItems[i] << '\n';
     }
