@@ -1,5 +1,5 @@
 // Aidan Carr
-// September 18, 2023
+// September 28, 2023
 // Palindrome main file
 
 //Compiled using g++
@@ -97,9 +97,11 @@ public:
         if(isEmpty()){
             head = &newTail;
         }
-        //fix this line!!!
+//FIX: this line!!!
         //tail->next = &newTail;
-        tail->next->setNext(&newTail);
+        //tail->next->setNext(&newTail);
+//I think the issue is that tail->next is a *Node 
+//but setNext is a Node method, so it is undefined
         tail = &newTail;
     }
 
@@ -157,6 +159,7 @@ int main () {
         
         //assign each line to element in the array
         for (int i = 0; i < 1; i++) {
+//FIX: changed i < 666 for testing purposes
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
             std::cout << magicItems[i] << '\n';
