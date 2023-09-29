@@ -58,7 +58,7 @@ bool isLessThan(string first, string second){
 }
 
 
-//Selection Sort Algoritm, sort the given array O(n^2)
+//Selection Sort Algorithm, sort the given array O(n^2)
 void selectionSort(string items[]){
     int comparisons = 0;
     int minPosition;
@@ -76,9 +76,33 @@ void selectionSort(string items[]){
         }
         swap(items, i, minPosition);
     }
-    std::cout << comparisons << '\n';
+    //Print number of comparisons
+    std::cout << "Selection Sort Comparisons: "  ;
+    std::cout << comparisons  << '\n';
+
 }
 
+
+//Insertion Sort Algorithm, sort the given array O(n^2)
+void insertionSort(string items[]){
+    int comparisons = 0;
+
+    for(int i = 1; i < NUM_OF_ITEMS; i ++){
+        int sortedIndex = i - 1;
+        int sortingIndex = i;
+
+        //find item[i]'s spot in the already sorted part of list
+        comparisons ++;
+//FIX: comparisons are incorrectly counting (must count inside while also)
+        while(sortedIndex >= 0 && isLessThan(items[sortingIndex],items[sortedIndex]) && comparisons++){
+            swap(items, sortedIndex, sortingIndex);
+            sortedIndex --;
+            sortingIndex --;
+        }
+    }
+    std::cout << "Insertion Sort Comparisons: "  ;
+    std::cout << comparisons  << '\n';
+}
 
 //Main program!
 int main () {
@@ -95,7 +119,7 @@ int main () {
         for (int i = 0; i < NUM_OF_ITEMS; i++) {
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
-            std::cout << magicItems[i] << '\n';
+            //std::cout << magicItems[i] << '\n';
         }
     }
 
@@ -107,25 +131,27 @@ int main () {
     //Shuffle
     shuffle(magicItems);
 
-    //Shuffle test print
-    std::cout << "--" << '\n';    
-    for (int i = 0; i < NUM_OF_ITEMS; i++) {
-        std::cout << magicItems[i] << '\n';
-    }
-
     //Selection Sort
     selectionSort(magicItems);
 
-    std::cout << "--After sort--" << '\n';    
+    //Print sorted list
+    // std::cout << "--After sort--" << '\n';    
+    // for (int i = 0; i < NUM_OF_ITEMS; i++) {
+    //     std::cout << magicItems[i] << '\n';
+    // }
+
+    //Shuffle
+    // shuffle(magicItems);
+    // for (int i = 0; i < NUM_OF_ITEMS; i++) {
+    //     std::cout << magicItems[i] << '\n';
+    // }
+
+    //Insertion Sort
+    insertionSort(magicItems);
+
     for (int i = 0; i < NUM_OF_ITEMS; i++) {
         std::cout << magicItems[i] << '\n';
     }
-
-    //Shuffle
-    shuffle(magicItems);
-
-    // Insertion Sort
-
 
     //Merge Sort
 
