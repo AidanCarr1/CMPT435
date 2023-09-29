@@ -9,6 +9,7 @@
 #include <string>
 #include <cctype>
 using namespace std;
+const int NUM_OF_ITEMS = 6;
 
 
 class Node {
@@ -151,15 +152,14 @@ int main () {
 
     ifstream itemsFile;
     itemsFile.open("magicitems.txt");
-    string magicItems[666]; 
+    string magicItems[NUM_OF_ITEMS]; 
 
 
     string currentLine;
     if (itemsFile.is_open()){
         
         //assign each line to element in the array
-        for (int i = 0; i < 1; i++) {
-//FIX: changed i < 666 for testing purposes
+        for (int i = 0; i < NUM_OF_ITEMS; i++) {
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
             std::cout << magicItems[i] << '\n';
@@ -167,7 +167,7 @@ int main () {
     }
 
     else{
-        std::cout << "Couldnt open file. \n";
+        std::cout << "Couldn't open file. \n";
     }
 
 
@@ -176,7 +176,7 @@ int main () {
     Stack myStack;
     Queue myQueue;
 
-    for (int i = 0; i < 666; i++) {
+    for (int i = 0; i < NUM_OF_ITEMS; i++) {
         item = magicItems[i];
 
         //clear the stack and queue
