@@ -23,8 +23,12 @@ public:
         next = nullptr;
     }
 
-    void setNext(Node* newNext){
-        next = newNext;
+    void setNext(Node newNext){
+        next = &newNext;
+    }
+
+    string getName(){
+        return itemName;
     }
 
 };
@@ -92,17 +96,32 @@ public:
         return false;
     }
 
+    void setTail(Node newTail){
+        tail = &newTail;
+    }
+
     //enqueue/add to back of queue
     void enqueue(Node newTail){
         //add a head if it is the first in line
         if(isEmpty()){
             head = &newTail;
         }
+
 //FIX: this line!!!
-        //tail->next = &newTail;
-        //tail->next->setNext(&newTail);
-//I think the issue is that tail->next is a *Node 
-//but setNext is a Node method, so it is undefined
+//Let former tail's next value point to the new tail
+        
+        //*tail->next = newTail;
+        //tail.setNext(&newTail);
+        //tail->getName();
+        //Node *myTail = tail;
+        //cout << myTail->setNext(n1) << "----";
+        //myTail->setNext(newTail);
+        //tail->setNext(newTail);
+        //tail->next->setNext(newTail);
+        
+        //idea:
+        //make a new node (myTail) with a new next pointer (newTail) and set this.tail = myTail
+
         tail = &newTail;
     }
 
@@ -121,7 +140,7 @@ public:
 
 int main () {
 
-    /* TEST
+    //* TEST
 
     //create 4 nodes
     Node n0("Freshman");
@@ -135,26 +154,26 @@ int main () {
     cout << n2.itemName << '\n';
     cout << n3.itemName << '\n';
     
-    //add to stack
-    Stack years;
-    years.push(n0);
-    years.push(n1);
-    years.push(n2);
-    years.push(n3);
+    //add to queue
+    Queue years;
+    years.enqueue(n0);
+    years.enqueue(n1);
+    years.enqueue(n2);
+    years.enqueue(n3);
 
     //pop out of stack
-    cout << years.pop() << '\n';
-    cout << years.pop() << '\n';
-    cout << years.pop() << '\n';
-    cout << years.pop() << '\n';
-    cout << years.pop() << '\n'; //will return error message
-    */
+    cout << years.dequeue() << '\n';
+    cout << years.dequeue() << '\n';
+    cout << years.dequeue() << '\n';
+    cout << years.dequeue() << '\n';
+    cout << years.dequeue() << '\n'; //will return error message
+    //*/
 
     ifstream itemsFile;
-    itemsFile.open("magicitems.txt");
+    itemsFile.open("letters.txt");
     string magicItems[NUM_OF_ITEMS]; 
 
-
+/*
     string currentLine;
     if (itemsFile.is_open()){
         
@@ -205,9 +224,31 @@ int main () {
                 std::cout << (myQueue.tail)->itemName << '\n';
 
             }         
+        }  
+
+        bool isPalindrome = true;
+
+        //compare letter by letter for palidrome
+        //while the stack is filled
+        while (! myStack.isEmpty()){
+            
+            string dequeued = myQueue.dequeue();
+            string popped = myStack.pop();
+
+            //compare the single character Nodes
+            if(dequeued[0] != popped[0]){
+                isPalindrome = false;
+                false;
+            }
         }
 
-        //compare
-    } 
+        if(isPalindrome){
+            
+        }
+        std::cout << item << '\n';
+
+    }
+
+    */
      
 }
