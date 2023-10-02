@@ -10,7 +10,8 @@
 #include <cctype>
 #include <time.h>
 using namespace std;
-const int NUM_OF_ITEMS = 666;
+const int NUM_OF_ITEMS = 666; //CONSTANT number of magic items
+int comparisons = 0; //count comparisons for each sorting method (resets on shuffle)
 
 
 //Swap 2 element positions given the array and both positions 
@@ -23,7 +24,7 @@ void swap(string items[], int position1, int position2){
 
 //Shuffle the given array O(n)
 void shuffle(string items[]){
-    srand(time(NULL)); //RNG seed
+    srand(time(NULL)); //set RNG seed based on current time
 
     int length = NUM_OF_ITEMS;
     for(int i = length-1; i > 0; i--){
@@ -31,6 +32,9 @@ void shuffle(string items[]){
         randomIndex = rand() % i;
         swap(items,i,randomIndex);
     }
+
+    //reset comparisons count
+    comparisons = 0;
 }
 
 
@@ -42,6 +46,9 @@ bool isLessThan(string first, string second){
     int length1 = first.length();
     int length2 = second.length();
     int length = (length1<length2)? length1 : length2;
+
+    //+1 comparison
+    comparisons++;
 
     //compare letter by letter until an alphabetically 'smaller' string is found (disregard CAPs)
     for(int i = 0; i < length; i++){
@@ -60,15 +67,13 @@ bool isLessThan(string first, string second){
 
 //Selection Sort Algorithm, sort the given array O(n^2)
 void selectionSort(string items[]){
-    int comparisons = 0;
     int minPosition;
     
     for(int i = 0; i <= NUM_OF_ITEMS - 2; i++){
         minPosition = i;
         
         for(int j = i+1; j <= NUM_OF_ITEMS - 1; j++){
-            comparisons ++;
-            
+
             //compare for alphabetical order
             if (isLessThan(items[j],items[minPosition])){
                 minPosition = j;
@@ -76,32 +81,84 @@ void selectionSort(string items[]){
         }
         swap(items, i, minPosition);
     }
-    //Print number of comparisons
-    std::cout << "Selection Sort Comparisons: "  ;
-    std::cout << comparisons  << '\n';
-
 }
 
 
 //Insertion Sort Algorithm, sort the given array O(n^2)
 void insertionSort(string items[]){
-    int comparisons = 0;
 
     for(int i = 1; i < NUM_OF_ITEMS; i ++){
         int sortedIndex = i - 1;
         int sortingIndex = i;
 
         //find item[i]'s spot in the already sorted part of list
-        comparisons ++;
-//FIX: comparisons are incorrectly counting (must count inside while also)
         while(sortedIndex >= 0 && isLessThan(items[sortingIndex],items[sortedIndex]) && comparisons++){
             swap(items, sortedIndex, sortingIndex);
             sortedIndex --;
             sortingIndex --;
         }
     }
-    std::cout << "Insertion Sort Comparisons: "  ;
-    std::cout << comparisons  << '\n';
+}
+
+
+//Get the length of an array of Strings
+
+
+//Merge Sort
+void mergeSort(string items[], int length){
+    //Base case: when length 1, start conquering, until then, divide
+    if (length > 1){
+        
+        int firstHalfLength = length/2;
+        int secondHalfLength = length - firstHalfLength;
+        string half1[firstHalfLength];
+        string half2[secondHalfLength];
+
+        //fill in half1
+        for(int i = 0; i < firstHalfLength; i++){
+            half1[i] = items[i];
+        }
+
+        //fill in half2
+        for(int i = 0; i < secondHalfLength; i++){
+            half2[i] = items[firstHalfLength+i];
+        }
+
+        //sort each half
+        mergeSort(half1, firstHalfLength);
+        mergeSort(half2, secondHalfLength);
+        
+        int sortingPos = 0;
+        int firstPos = 0;
+        int secondPos = 0;
+
+        while (sortingPos < length){
+  
+            //if one half is completely put into sorted array, 
+            //put the rest of the other half into sorted array
+            if(firstPos == firstHalfLength){
+                items[sortingPos] = half2[secondPos];
+                secondPos ++;
+            }
+            else if(secondPos == secondHalfLength){
+                items[sortingPos] = half1[firstPos];
+                firstPos ++;
+            }
+
+            //sort 2 ordered arrays into one larger array
+            else if(isLessThan(half1[firstPos],half2[secondPos])){
+                items[sortingPos] = half1[firstPos];
+                firstPos ++;
+            }
+            else{
+                items[sortingPos] = half2[secondPos];
+                secondPos ++;
+            }
+            
+            //move to next sorted position
+            sortingPos ++;
+        }
+    }
 }
 
 //Main program!
@@ -114,12 +171,11 @@ int main () {
     string item;
     string currentLine;
     if (itemsFile.is_open()){
-        
+
         //assign each line to an element in the array
         for (int i = 0; i < NUM_OF_ITEMS; i++) {
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
-            //std::cout << magicItems[i] << '\n';
         }
     }
 
@@ -133,29 +189,32 @@ int main () {
 
     //Selection Sort
     selectionSort(magicItems);
-
-    //Print sorted list
-    // std::cout << "--After sort--" << '\n';    
-    // for (int i = 0; i < NUM_OF_ITEMS; i++) {
-    //     std::cout << magicItems[i] << '\n';
-    // }
+    std::cout << "Selection Sort Comparisons: "  ;
+    std::cout << comparisons  << '\n';
 
     //Shuffle
-    // shuffle(magicItems);
-    // for (int i = 0; i < NUM_OF_ITEMS; i++) {
-    //     std::cout << magicItems[i] << '\n';
-    // }
+    shuffle(magicItems);
 
     //Insertion Sort
     insertionSort(magicItems);
+    std::cout << "Insertion Sort Comparisons: "  ;
+    std::cout << comparisons  << '\n';
 
-    for (int i = 0; i < NUM_OF_ITEMS; i++) {
-        std::cout << magicItems[i] << '\n';
-    }
+    //Shuffle
+    shuffle(magicItems);
 
     //Merge Sort
+    mergeSort(magicItems, NUM_OF_ITEMS);
+    std::cout << "Merge Sort Comparisons: "  ;
+    std::cout << comparisons  << '\n';
 
 
     //Quick Sort
+
+/*
+    for (int i = 0; i < NUM_OF_ITEMS; i++) {
+        std::cout << magicItems[i] << '\n';
+    }
+//*/
 
 }
