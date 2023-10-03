@@ -23,8 +23,8 @@ public:
         next = nullptr;
     }
 
-    void setNext(Node newNext){
-        next = &newNext;
+    void setNext(Node* newNext){
+        next = newNext;
     }
 
     string getName(){
@@ -45,6 +45,10 @@ public:
     Stack(){
         top = nullptr;
     }
+
+    //Destructor
+    //~Stack(){
+    //}
 
     //METHODS
     //return true if Empty
@@ -87,10 +91,14 @@ public:
         tail = nullptr;
     }
 
+    //Destructor
+    //~Queue(){
+    //}
+
     //METHODS
     //return true if Empty
     bool isEmpty(){
-        if (head == nullptr){
+        if(head == nullptr){
             return true;
         }
         return false;
@@ -106,22 +114,9 @@ public:
         if(isEmpty()){
             head = &newTail;
         }
-
-//FIX: this line!!!
-//Let former tail's next value point to the new tail
-        
-        //*tail->next = newTail;
-        //tail.setNext(&newTail);
-        //tail->getName();
-        //Node *myTail = tail;
-        //cout << myTail->setNext(n1) << "----";
-        //myTail->setNext(newTail);
-        //tail->setNext(newTail);
-        //tail->next->setNext(newTail);
-        
-        //idea:
-        //make a new node (myTail) with a new next pointer (newTail) and set this.tail = myTail
-
+        else{
+            tail->next = &newTail;
+        }
         tail = &newTail;
     }
 
@@ -162,6 +157,7 @@ int main () {
     years.enqueue(n3);
 
     //pop out of stack
+    cout << " BEGIN dequeuing\n";
     cout << years.dequeue() << '\n';
     cout << years.dequeue() << '\n';
     cout << years.dequeue() << '\n';
@@ -169,15 +165,15 @@ int main () {
     cout << years.dequeue() << '\n'; //will return error message
     //*/
 
+//*/
     ifstream itemsFile;
     itemsFile.open("letters.txt");
     string magicItems[NUM_OF_ITEMS]; 
 
-/*
     string currentLine;
     if (itemsFile.is_open()){
         
-        //assign each line to element in the array
+        //assign each line to an element in the array
         for (int i = 0; i < NUM_OF_ITEMS; i++) {
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
@@ -186,24 +182,22 @@ int main () {
     }
 
     else{
-        std::cout << "Couldn't open file. \n";
+        //cause issues
+        //std::cout << "Couldn't open file. \n";
     }
 
 
     //go through every magic item
     string item;
-    Stack myStack;
-    Queue myQueue;
 
     for (int i = 0; i < NUM_OF_ITEMS; i++) {
         item = magicItems[i];
 
-        //clear the stack and queue
-        myStack.top = nullptr;
-        myQueue.head = nullptr;
-        myQueue.tail = nullptr;
+        //create the stack and queue
+        Stack myStack;
+        Queue myQueue;
 
-        //add letter to stack and queue (appropriately)
+        //add each letter to stack and queue (appropriately)
         for (int j = 0; j < item.length(); j++){
             
             if(magicItems[i][j] != ' '){
@@ -212,43 +206,48 @@ int main () {
                 string character(1,toupper(magicItems[i][j]));
                 
                 //push character to stack
-                Node myStackNode(character);
-                myStack.push(myStackNode);
+                //Node myStackNode(character);
+                myStack.push(Node(character));
                 //test line:
-                std::cout << (myStack.top)->itemName << '\n';
+                //std::cout << (myStack.top)->itemName << '+';
 
                 //enqueue character to queue
-                Node myQueueNode(character);
-                myQueue.enqueue(myQueueNode);
+                //Node myQueueNode(character);
+                myQueue.enqueue(Node(character));
                 //test line:
-                std::cout << (myQueue.tail)->itemName << '\n';
+                //std::cout << (myQueue.tail)->itemName << ' ';
 
             }         
         }  
+        std::cout << "\nnew word\n";
 
         bool isPalindrome = true;
+        string dequeued;
+        string popped;
 
-        //compare letter by letter for palidrome
+        //compare letter by letter for palindrome
         //while the stack is filled
-        while (! myStack.isEmpty()){
-            
-            string dequeued = myQueue.dequeue();
-            string popped = myStack.pop();
+        while (!myQueue.isEmpty() && isPalindrome){
+
+//FIX: dequeuing the tail for some reason!!
+            dequeued = myQueue.dequeue();
+            popped = myStack.pop();
+            cout << dequeued <<"=" << popped << "?\n";
 
             //compare the single character Nodes
-            if(dequeued[0] != popped[0]){
+            if(dequeued != popped){
+            //if(0 ==0){
                 isPalindrome = false;
-                false;
             }
+            isPalindrome = false;
         }
 
         if(isPalindrome){
-            
+            std::cout << item << '\n';
         }
-        std::cout << item << '\n';
 
-    }
+        //Clear stack and queue
 
-    */
-     
+    }   
+    //*/  
 }

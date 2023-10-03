@@ -168,7 +168,7 @@ int main () {
     itemsFile.open("magicitems.txt");
     string magicItems[NUM_OF_ITEMS]; 
 
-    string item;
+    //string item;
     string currentLine;
     if (itemsFile.is_open()){
 
