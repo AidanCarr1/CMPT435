@@ -9,7 +9,7 @@
 #include <string>
 #include <cctype>
 using namespace std;
-const int NUM_OF_ITEMS = 6;
+const int NUM_OF_ITEMS = 666;
 
 
 class Node {
@@ -18,8 +18,13 @@ public:
     string itemName;
     Node* next;
 
+    //Constructors
     Node(string itemNameInput){
         itemName = itemNameInput;
+        next = nullptr;
+    }
+    Node(){
+        itemName = "";
         next = nullptr;
     }
 
@@ -60,9 +65,9 @@ public:
     }
 
     //push/add to the top
-    void push(Node newTop){
-        newTop.next = top;
-        top = &newTop;
+    void push(Node* newTop){
+        newTop->next = top;
+        top = newTop;
     }
 
     //retrieve from the top
@@ -98,26 +103,26 @@ public:
     //METHODS
     //return true if Empty
     bool isEmpty(){
-        if(head == nullptr){
+        if(tail == nullptr || head == nullptr){
             return true;
         }
         return false;
     }
 
-    void setTail(Node newTail){
-        tail = &newTail;
-    }
-
     //enqueue/add to back of queue
-    void enqueue(Node newTail){
+    void enqueue(Node* newTail){
         //add a head if it is the first in line
         if(isEmpty()){
-            head = &newTail;
+            head = newTail;
+            //cout << "i think its empty ";
         }
         else{
-            tail->next = &newTail;
+            //cout << "head before tail's next: " << head->itemName << '\n';
+            //put new tail behind the old tail
+            tail->next = newTail;
         }
-        tail = &newTail;
+        //make this queue's tail this new tail
+        tail = newTail;
     }
 
     //dequeue/retrieve from front of queue
@@ -133,9 +138,66 @@ public:
 };
 
 
+//return true if word is a palindrome
+//create the stack and queue
+bool isPalindrome(string item){
+    Stack myStack;
+    Queue myQueue;
+    Node myStackNodes[item.length()];
+    Node myQueueNodes[item.length()];
+    string character;
+
+    //create 2 nodes for each character (appropriately)
+    for (int letterIndex = 0; letterIndex < item.length(); letterIndex++){
+
+        if(item[letterIndex] != ' '){
+            //convert current character to an uppercase string
+            character = (1,toupper(item[letterIndex]));
+            
+            //make 2 nodes
+            myStackNodes[letterIndex].itemName = character;
+            myQueueNodes[letterIndex].itemName = character;
+
+            //add each character to stack and queue
+            myStack.push(&myStackNodes[letterIndex]);
+            myQueue.enqueue(&myQueueNodes[letterIndex]);
+        }         
+    }  
+ 
+    //std::cout << "\nnew word\n";
+
+    bool isPalindrome = true;
+    string dequeued = "";
+    string popped = "";
+
+    //compare letter by letter for palindrome
+    //while the stack is filled
+    while (!myQueue.isEmpty() && isPalindrome){
+
+//FIX: dequeuing the tail for some reason!!
+        dequeued = myQueue.dequeue();
+        popped = myStack.pop();
+        //cout << dequeued <<"=" << popped << "?\n";
+
+        //compare the single character Nodes
+        if(dequeued != popped){
+        //if(0 ==0){
+            isPalindrome = false;
+        }
+    }
+
+    if(isPalindrome){
+        return true;
+    }
+    return false;
+
+    //Clear stack and queue
+}
+
+
 int main () {
 
-    //* TEST
+    /* TEST
 
     //create 4 nodes
     Node n0("Freshman");
@@ -151,23 +213,29 @@ int main () {
     
     //add to queue
     Queue years;
-    years.enqueue(n0);
-    years.enqueue(n1);
-    years.enqueue(n2);
-    years.enqueue(n3);
+    years.enqueue(&n0);
+    years.enqueue(&n1);
+    years.enqueue(&n2);
+    years.enqueue(&n3);
 
-    //pop out of stack
+    /*pop out of stack
     cout << " BEGIN dequeuing\n";
     cout << years.dequeue() << '\n';
     cout << years.dequeue() << '\n';
     cout << years.dequeue() << '\n';
     cout << years.dequeue() << '\n';
     cout << years.dequeue() << '\n'; //will return error message
-    //*/
+    
+    string dequeued;
+    for(int i = 0; i < 4; i++){
+        dequeued = years.dequeue();
+        cout << dequeued << "?\n";
+    }
+
 
 //*/
     ifstream itemsFile;
-    itemsFile.open("letters.txt");
+    itemsFile.open("magicItems.txt");
     string magicItems[NUM_OF_ITEMS]; 
 
     string currentLine;
@@ -177,7 +245,7 @@ int main () {
         for (int i = 0; i < NUM_OF_ITEMS; i++) {
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
-            std::cout << magicItems[i] << '\n';
+            //std::cout << magicItems[i] << '\n';
         }
     }
 
@@ -186,67 +254,17 @@ int main () {
         //std::cout << "Couldn't open file. \n";
     }
 
-
+    cout << "\n\n";
     //go through every magic item
     string item;
 
     for (int i = 0; i < NUM_OF_ITEMS; i++) {
         item = magicItems[i];
 
-        //create the stack and queue
-        Stack myStack;
-        Queue myQueue;
-
-        //add each letter to stack and queue (appropriately)
-        for (int j = 0; j < item.length(); j++){
-            
-            if(magicItems[i][j] != ' '){
-                
-                //convert current character to an uppercase string
-                string character(1,toupper(magicItems[i][j]));
-                
-                //push character to stack
-                //Node myStackNode(character);
-                myStack.push(Node(character));
-                //test line:
-                //std::cout << (myStack.top)->itemName << '+';
-
-                //enqueue character to queue
-                //Node myQueueNode(character);
-                myQueue.enqueue(Node(character));
-                //test line:
-                //std::cout << (myQueue.tail)->itemName << ' ';
-
-            }         
-        }  
-        std::cout << "\nnew word\n";
-
-        bool isPalindrome = true;
-        string dequeued;
-        string popped;
-
-        //compare letter by letter for palindrome
-        //while the stack is filled
-        while (!myQueue.isEmpty() && isPalindrome){
-
-//FIX: dequeuing the tail for some reason!!
-            dequeued = myQueue.dequeue();
-            popped = myStack.pop();
-            cout << dequeued <<"=" << popped << "?\n";
-
-            //compare the single character Nodes
-            if(dequeued != popped){
-            //if(0 ==0){
-                isPalindrome = false;
-            }
-            isPalindrome = false;
+        if(isPalindrome(item)){
+            cout << item << "!\n";
         }
-
-        if(isPalindrome){
-            std::cout << item << '\n';
-        }
-
-        //Clear stack and queue
+        
 
     }   
     //*/  
