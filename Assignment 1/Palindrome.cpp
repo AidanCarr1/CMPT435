@@ -10,6 +10,7 @@
 #include <cctype>
 using namespace std;
 const int NUM_OF_ITEMS = 666;
+const string FILE_NAME = "magicitems.txt";
 
 
 class Node {
@@ -58,7 +59,7 @@ public:
     //retrieve from the top
     string pop(){
         //cant pop if there is nothing to pop
-        if(isEmpty()){
+        if (isEmpty()){
             return "EMPTY STACK";
         }
         string popping = top->itemName;
@@ -82,7 +83,7 @@ public:
     //METHODS
     //return true if Empty
     bool isEmpty(){
-        if(tail == nullptr || head == nullptr){
+        if (tail == nullptr || head == nullptr){
             return true;
         }
         return false;
@@ -91,10 +92,10 @@ public:
     //enqueue/add to back of queue
     void enqueue(Node* newTail){
         //add a head if it is the first in line
-        if(isEmpty()){
+        if (isEmpty()){
             head = newTail;
         }
-        else{
+        else {
             //put new tail behind the old tail
             tail->next = newTail;
         }
@@ -105,7 +106,7 @@ public:
     //dequeue/retrieve from front of queue
     string dequeue(){
         //cant pop if there is nothing to pop
-        if(isEmpty()){
+        if (isEmpty()){
             return "EMPTY STACK";
         }
         string dequeuing = head->itemName;
@@ -128,7 +129,7 @@ bool isPalindrome(string item){
     //create 2 nodes for each character (appropriately)
     for (int letterIndex = 0; letterIndex < item.length(); letterIndex++){
 
-        if(item[letterIndex] != ' '){
+        if (item[letterIndex] != ' '){
             //convert current character to an uppercase string
             character = (1,toupper(item[letterIndex]));
             
@@ -154,7 +155,7 @@ bool isPalindrome(string item){
         popped = myStack.pop();
 
         //compare the single character Nodes
-        if(dequeued != popped){
+        if (dequeued != popped){
             isPalindrome = false;
         }
     }
@@ -165,27 +166,27 @@ bool isPalindrome(string item){
 int main () {
 
     ifstream itemsFile;
-    itemsFile.open("magicItems.txt");
+    itemsFile.open(FILE_NAME);
     string magicItems[NUM_OF_ITEMS]; 
 
     string currentLine;
     if (itemsFile.is_open()){
         
         //assign each line to an element in the array
-        for (int i = 0; i < NUM_OF_ITEMS; i++) {
+        for (int i = 0; i < NUM_OF_ITEMS; i++){
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
         }
     }
 
-    else{}
+    else {}
 
     //go through every magic item, check if PALINDROME
     string item;
-    for (int i = 0; i < NUM_OF_ITEMS; i++) {
+    for (int i = 0; i < NUM_OF_ITEMS; i++){
         item = magicItems[i];
 
-        if(isPalindrome(item)){
+        if (isPalindrome(item)){
             cout << item << "\n";
         }
     }   
