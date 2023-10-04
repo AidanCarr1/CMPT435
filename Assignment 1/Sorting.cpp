@@ -10,9 +10,13 @@
 #include <cctype>
 #include <time.h>
 using namespace std;
-const int NUM_OF_ITEMS = 10; //CONSTANT number of magic items
-const string FILE_NAME = "letters.txt";
-int comparisons = 0; //count comparisons for each sorting method (resets on shuffle)
+
+//GLOBAL variables
+const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
+const string _FILE_NAME = "magicitems.txt";
+int _comparisons = 0; //count comparisons for each sorting method (resets on shuffle)
+
+
 
 //Swap 2 element positions given the array and both positions 
 void swap(string items[], int position1, int position2){
@@ -26,15 +30,15 @@ void swap(string items[], int position1, int position2){
 void shuffle(string items[]){
     srand(time(NULL)); //set RNG seed based on current time
 
-    int length = NUM_OF_ITEMS;
+    int length = _NUM_OF_ITEMS;
     for (int i = length-1; i > 0; i--){
         int randomIndex;
         randomIndex = rand() % i;
         swap(items,i,randomIndex);
     }
 
-    //reset comparisons count
-    comparisons = 0;
+    //reset comparisons count after each shuffle
+    _comparisons = 0;
 }
 
 
@@ -48,7 +52,7 @@ bool isLessThan(string first, string second){
     int length = (length1<length2)? length1 : length2;
 
     //+1 comparison
-    comparisons++;
+    _comparisons++;
 
     //compare letter by letter until an alphabetically 'smaller' string is found (disregard CAPs)
     for (int i = 0; i < length; i++){
@@ -61,18 +65,18 @@ bool isLessThan(string first, string second){
     }
 
     //tie goes to the shorter string
-    return (length1<length2)? true : false;
+    return (length1<=length2)? true : false;
 }
 
 
-//Selection Sort Algorithm, sort the given array O(n^2)
+//Selection Sort Algorithm, sort the given array. O(n^2)
 void selectionSort(string items[]){
     int minPosition;
     
-    for (int i = 0; i <= NUM_OF_ITEMS - 2; i++){
+    for (int i = 0; i <= _NUM_OF_ITEMS - 2; i++){
         minPosition = i;
         
-        for (int j = i+1; j <= NUM_OF_ITEMS - 1; j++){
+        for (int j = i+1; j <= _NUM_OF_ITEMS - 1; j++){
 
             //compare for alphabetical order
             if (isLessThan(items[j],items[minPosition])){
@@ -84,15 +88,15 @@ void selectionSort(string items[]){
 }
 
 
-//Insertion Sort Algorithm, sort the given array O(n^2)
+//Insertion Sort Algorithm, sort the given array. O(n^2)
 void insertionSort(string items[]){
 
-    for (int i = 1; i < NUM_OF_ITEMS; i ++){
+    for (int i = 1; i < _NUM_OF_ITEMS; i ++){
         int sortedIndex = i - 1;
         int sortingIndex = i;
 
         //find item[i]'s spot in the already sorted part of list
-        while(sortedIndex >= 0 && isLessThan(items[sortingIndex],items[sortedIndex]) && comparisons++){
+        while(sortedIndex >= 0 && isLessThan(items[sortingIndex],items[sortedIndex]) && _comparisons++){
             swap(items, sortedIndex, sortingIndex);
             sortedIndex --;
             sortingIndex --;
@@ -101,7 +105,7 @@ void insertionSort(string items[]){
 }
 
 
-//Merge Sort Algorithm, sort given array with length (recursive) O(log2n)
+//Merge Sort Algorithm, sort given array with length (recursive). O(log2n)
 void mergeSort(string items[], int length){
     //Base case: when length 1, start conquering, until then, divide
     if (length > 1){
@@ -152,39 +156,46 @@ void mergeSort(string items[], int length){
                 secondPos ++;
             }
             
-            //move to next sorted position
+            //move to next position to be sorted
             sortingPos ++;
         }
     }
 }
 
 
-//Partition Algorithm, part of quick sort organize array with pivot in correct spot
+//Partition Algorithm, part of Quick Qort 
+//organize array with pivot in correct spot
+    //from Jeff Erikson's Algorithms book, translated from pseudocode to c++ by me
 int partition(string items[], int splitIndex, int length){
+    
     swap(items, splitIndex, length-1);
 
-    //This variable tracks the lowest index of elements the belong higher than the pivot value
+    //This variable tracks the left-most index of elements that belong to the right of pivot value
     int higherPos = -1;
     for (int checking = 0; checking < length-1; checking++){
         
         if(isLessThan(items[checking], items[length-1])){
             higherPos++;
-            //move higher values higher
+            //move higher values to the right
             swap(items, higherPos, checking);
         }
     }
+
+    //swap pivot and value the should be right of pivot
     swap(items, length-1, higherPos+1);
     return higherPos + 1;
 }
 
 
-//Quick Sort Algorithm, sort given array O(log2n)
+//Quick Sort Algorithm, sort given array, uses partition function (above). O(log2n)
 void quickSort(string items[], int length){
     
     srand(time(NULL)); //set RNG seed based on current time
 
     if (length > 1){
         int splitIndex;
+        int comparisonsWithOutRands = _comparisons;
+        
         //choose 3 pivot candidates 
         if (length >= 3){
             int rand1 = rand() % length;
@@ -194,7 +205,6 @@ void quickSort(string items[], int length){
             string item1 = items[rand1];
             string item2 = items[rand2];
             string item3 = items[rand3];
-            cout << item1 << ", " << item2 << ", " << item3 << "\n"; //test
 
             //pick middle valued index
             if ( (isLessThan(item2,item1) && isLessThan(item1,item3)) || (isLessThan(item3,item1)) && (isLessThan(item1,item2)) ){
@@ -206,99 +216,107 @@ void quickSort(string items[], int length){
             else {
                 splitIndex = rand3;
             }
-
-            cout << "pivot: " << items[splitIndex] << "\n\n"; //test
         }
+        
         //choose 1 pivot index if there aren't enough candidates
         else {
             splitIndex = rand() % length;
         }
 
+        //sort into left, center(r), and right
         int r = partition(items, splitIndex, length);
-
-        for (int i = 0; i < NUM_OF_ITEMS; i++){
-            std::cout << items[i] << '\n';
-        }
         
-        //Merge Sort Code: (Might be useful)
+
+        //Create left and right half arrays
         int firstHalfLength = r;
         int secondHalfLength = length - r - 1;
-        string half1[firstHalfLength];
-        string half2[secondHalfLength];
+        string left[firstHalfLength];
+        string right[secondHalfLength];
 
-        //quickSort(items,)
+        //fill in left (0,r-1)
+        for (int i = 0; i < firstHalfLength; i++){
+            left[i] = items[i];
+        }
+
+        //fill in half2 (r+1,length-1)
+        for (int i = 0; i < secondHalfLength; i++){
+            right[i] = items[firstHalfLength+i+1];
+        }
+
+        //merge sorted each half
+        mergeSort(left, firstHalfLength);
+        mergeSort(right, secondHalfLength);
+
+        //merge sorted arrays into items[]
+        for (int i = 0; i < firstHalfLength; i++){
+            items[i] = left[i];
+        }
+        //item[r] stays item[r]
+        for (int i = r+1; i < length; i++){
+            items[i] = right[i-r-1];
+        }
     }
-    
-    
 }
 
 
 //Main program!
+//Open file, put into array, shuffle, sort, and print comparisons
 int main () {
 
+    //Open the file
     ifstream itemsFile;
-    itemsFile.open(FILE_NAME);
-    string magicItems[NUM_OF_ITEMS]; 
+    itemsFile.open(_FILE_NAME);
+    string magicItems[_NUM_OF_ITEMS]; 
 
-    //string item;
     string currentLine;
     if (itemsFile.is_open()){
 
         //assign each line to an element in the array
-        for (int i = 0; i < NUM_OF_ITEMS; i++){
+        for (int i = 0; i < _NUM_OF_ITEMS; i++){
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
         }
     }
 
-    else {
-        //causing weird issues:
-        //std::cout << "Couldn't open file. \n";
-    }
+    else {}
 
-/*
-    //Shuffle
+
+    //Shuffle items
     shuffle(magicItems);
 
     //Selection Sort
     selectionSort(magicItems);
     std::cout << "Selection Sort Comparisons: "  ;
-    std::cout << comparisons  << '\n';
+    std::cout << _comparisons  << '\n';
 
-    //Shuffle
+    //Shuffle items
     shuffle(magicItems);
 
     //Insertion Sort
     insertionSort(magicItems);
     std::cout << "Insertion Sort Comparisons: "  ;
-    std::cout << comparisons  << '\n';
+    std::cout << _comparisons  << '\n';
 
-    //Shuffle
+    //Shuffle items
     shuffle(magicItems);
 
     //Merge Sort
-    mergeSort(magicItems, NUM_OF_ITEMS);
+    mergeSort(magicItems, _NUM_OF_ITEMS);
     std::cout << "Merge Sort Comparisons: "  ;
-    std::cout << comparisons  << '\n';
-*/
-    //Shuffle
+    std::cout << _comparisons  << '\n';
+
+    //Shuffle items
     shuffle(magicItems);
 
-    std::cout << "Shuffled: " << '\n';
-    for (int i = 0; i < NUM_OF_ITEMS; i++){
-        std::cout << magicItems[i] << '\n';
-    }
-    std::cout << '\n';
-
     //Quick Sort
-    quickSort(magicItems, NUM_OF_ITEMS);
-    //std::cout << "Quick Sort Comparisons: "  ;
-    //std::cout << comparisons  << '\n';
+    quickSort(magicItems, _NUM_OF_ITEMS);
+    std::cout << "Quick Sort Comparisons: "  ;
+    std::cout << _comparisons  << '\n';
 
 /*
+    std::cout << "\nSORTED!\n\n";
     for (int i = 0; i < NUM_OF_ITEMS; i++){
         std::cout << magicItems[i] << '\n';
     }
 //*/
-
 }

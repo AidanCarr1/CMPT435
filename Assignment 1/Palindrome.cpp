@@ -9,8 +9,11 @@
 #include <string>
 #include <cctype>
 using namespace std;
-const int NUM_OF_ITEMS = 666;
-const string FILE_NAME = "magicitems.txt";
+
+//GLOBAL variables
+const int _NUM_OF_ITEMS = 666;
+const string _FILE_NAME = "magicitems.txt";
+
 
 
 class Node {
@@ -166,14 +169,14 @@ bool isPalindrome(string item){
 int main () {
 
     ifstream itemsFile;
-    itemsFile.open(FILE_NAME);
-    string magicItems[NUM_OF_ITEMS]; 
+    itemsFile.open(_FILE_NAME);
+    string magicItems[_NUM_OF_ITEMS]; 
 
     string currentLine;
     if (itemsFile.is_open()){
         
         //assign each line to an element in the array
-        for (int i = 0; i < NUM_OF_ITEMS; i++){
+        for (int i = 0; i < _NUM_OF_ITEMS; i++){
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
         }
@@ -183,7 +186,7 @@ int main () {
 
     //go through every magic item, check if PALINDROME
     string item;
-    for (int i = 0; i < NUM_OF_ITEMS; i++){
+    for (int i = 0; i < _NUM_OF_ITEMS; i++){
         item = magicItems[i];
 
         if (isPalindrome(item)){
