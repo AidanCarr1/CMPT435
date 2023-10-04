@@ -1,5 +1,5 @@
 // Aidan Carr
-// September 28, 2023
+// October 3, 2023
 // Palindrome main file
 
 //Compiled using g++
@@ -27,7 +27,6 @@ public:
         itemName = "";
         next = nullptr;
     }
-
 };
 
 
@@ -121,9 +120,10 @@ public:
 bool isPalindrome(string item){
     Stack myStack;
     Queue myQueue;
+    string character;
+    //arrays are for storage purposes only
     Node myStackNodes[item.length()];
     Node myQueueNodes[item.length()];
-    string character;
 
     //create 2 nodes for each character (appropriately)
     for (int letterIndex = 0; letterIndex < item.length(); letterIndex++){
@@ -147,9 +147,9 @@ bool isPalindrome(string item){
     string popped = "";
     
     //compare letter by letter for palindrome
-    //while the stack is filled
     while (!myQueue.isEmpty() && isPalindrome){
-        
+        //search until all letters checked, or palindrome is proven wrong
+
         dequeued = myQueue.dequeue();
         popped = myStack.pop();
 
