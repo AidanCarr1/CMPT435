@@ -159,13 +159,32 @@ void mergeSort(string items[], int length){
 }
 
 
+//Partition Algorithm, part of quick sort organize array with pivot in correct spot
+int partition(string items[], int splitIndex, int length){
+    swap(items, splitIndex, length-1);
+
+    //This variable tracks the lowest index of elements the belong higher than the pivot value
+    int higherPos = -1;
+    for (int checking = 0; checking < length-1; checking++){
+        
+        if(isLessThan(items[checking], items[length-1])){
+            higherPos++;
+            //move higher values higher
+            swap(items, higherPos, checking);
+        }
+    }
+    swap(items, length-1, higherPos+1);
+    return higherPos + 1;
+}
+
+
 //Quick Sort Algorithm, sort given array O(log2n)
 void quickSort(string items[], int length){
     
     srand(time(NULL)); //set RNG seed based on current time
 
     if (length > 1){
-
+        int splitIndex;
         //choose 3 pivot candidates 
         if (length >= 3){
             int rand1 = rand() % length;
@@ -175,9 +194,9 @@ void quickSort(string items[], int length){
             string item1 = items[rand1];
             string item2 = items[rand2];
             string item3 = items[rand3];
+            cout << item1 << ", " << item2 << ", " << item3 << "\n"; //test
 
             //pick middle valued index
-            int splitIndex;
             if ( (isLessThan(item2,item1) && isLessThan(item1,item3)) || (isLessThan(item3,item1)) && (isLessThan(item1,item2)) ){
                 splitIndex = rand1;
             }
@@ -187,13 +206,27 @@ void quickSort(string items[], int length){
             else {
                 splitIndex = rand3;
             }
+
+            cout << "pivot: " << items[splitIndex] << "\n\n"; //test
+        }
+        //choose 1 pivot index if there aren't enough candidates
+        else {
+            splitIndex = rand() % length;
         }
 
+        int r = partition(items, splitIndex, length);
+
+        for (int i = 0; i < NUM_OF_ITEMS; i++){
+            std::cout << items[i] << '\n';
+        }
+        
         //Merge Sort Code: (Might be useful)
-        //int firstHalfLength = length/2;
-        //int secondHalfLength = length - firstHalfLength;
-        //string half1[firstHalfLength];
-        //string half2[secondHalfLength];
+        int firstHalfLength = r;
+        int secondHalfLength = length - r - 1;
+        string half1[firstHalfLength];
+        string half2[secondHalfLength];
+
+        //quickSort(items,)
     }
     
     
@@ -223,6 +256,7 @@ int main () {
         //std::cout << "Couldn't open file. \n";
     }
 
+/*
     //Shuffle
     shuffle(magicItems);
 
@@ -246,12 +280,18 @@ int main () {
     mergeSort(magicItems, NUM_OF_ITEMS);
     std::cout << "Merge Sort Comparisons: "  ;
     std::cout << comparisons  << '\n';
-
+*/
     //Shuffle
     shuffle(magicItems);
 
+    std::cout << "Shuffled: " << '\n';
+    for (int i = 0; i < NUM_OF_ITEMS; i++){
+        std::cout << magicItems[i] << '\n';
+    }
+    std::cout << '\n';
+
     //Quick Sort
-    //quickSort(magicItems, NUM_OF_ITEMS);
+    quickSort(magicItems, NUM_OF_ITEMS);
     //std::cout << "Quick Sort Comparisons: "  ;
     //std::cout << comparisons  << '\n';
 
