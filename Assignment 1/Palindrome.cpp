@@ -28,32 +28,18 @@ public:
         next = nullptr;
     }
 
-    void setNext(Node* newNext){
-        next = newNext;
-    }
-
-    string getName(){
-        return itemName;
-    }
-
 };
 
 
 class Stack{
 
 public:
-    
-    //Attributes
     Node* top;
 
     //Constructor
     Stack(){
         top = nullptr;
     }
-
-    //Destructor
-    //~Stack(){
-    //}
 
     //METHODS
     //return true if Empty
@@ -85,8 +71,6 @@ public:
 class Queue{
 
 public:
-    
-    //Attributes
     Node* head;
     Node* tail;
 
@@ -95,10 +79,6 @@ public:
         head = nullptr;
         tail = nullptr;
     }
-
-    //Destructor
-    //~Queue(){
-    //}
 
     //METHODS
     //return true if Empty
@@ -114,10 +94,8 @@ public:
         //add a head if it is the first in line
         if(isEmpty()){
             head = newTail;
-            //cout << "i think its empty ";
         }
         else{
-            //cout << "head before tail's next: " << head->itemName << '\n';
             //put new tail behind the old tail
             tail->next = newTail;
         }
@@ -164,76 +142,28 @@ bool isPalindrome(string item){
         }         
     }  
  
-    //std::cout << "\nnew word\n";
-
     bool isPalindrome = true;
     string dequeued = "";
     string popped = "";
-
+    
     //compare letter by letter for palindrome
     //while the stack is filled
     while (!myQueue.isEmpty() && isPalindrome){
-
-//FIX: dequeuing the tail for some reason!!
+        
         dequeued = myQueue.dequeue();
         popped = myStack.pop();
-        //cout << dequeued <<"=" << popped << "?\n";
 
         //compare the single character Nodes
         if(dequeued != popped){
-        //if(0 ==0){
             isPalindrome = false;
         }
     }
-
-    if(isPalindrome){
-        return true;
-    }
-    return false;
-
-    //Clear stack and queue
+    return isPalindrome;
 }
 
 
 int main () {
 
-    /* TEST
-
-    //create 4 nodes
-    Node n0("Freshman");
-    Node n1("Sophomore");
-    Node n2("Junior");
-    Node n3("Senior");
-
-    //print variables
-    cout << n0.itemName << '\n';
-    cout << n1.itemName << '\n';
-    cout << n2.itemName << '\n';
-    cout << n3.itemName << '\n';
-    
-    //add to queue
-    Queue years;
-    years.enqueue(&n0);
-    years.enqueue(&n1);
-    years.enqueue(&n2);
-    years.enqueue(&n3);
-
-    /*pop out of stack
-    cout << " BEGIN dequeuing\n";
-    cout << years.dequeue() << '\n';
-    cout << years.dequeue() << '\n';
-    cout << years.dequeue() << '\n';
-    cout << years.dequeue() << '\n';
-    cout << years.dequeue() << '\n'; //will return error message
-    
-    string dequeued;
-    for(int i = 0; i < 4; i++){
-        dequeued = years.dequeue();
-        cout << dequeued << "?\n";
-    }
-
-
-//*/
     ifstream itemsFile;
     itemsFile.open("magicItems.txt");
     string magicItems[NUM_OF_ITEMS]; 
@@ -245,27 +175,18 @@ int main () {
         for (int i = 0; i < NUM_OF_ITEMS; i++) {
             std::getline(itemsFile, currentLine);
             magicItems[i] = currentLine;
-            //std::cout << magicItems[i] << '\n';
         }
     }
 
-    else{
-        //cause issues
-        //std::cout << "Couldn't open file. \n";
-    }
+    else{}
 
-    cout << "\n\n";
-    //go through every magic item
+    //go through every magic item, check if PALINDROME
     string item;
-
     for (int i = 0; i < NUM_OF_ITEMS; i++) {
         item = magicItems[i];
 
         if(isPalindrome(item)){
-            cout << item << "!\n";
+            cout << item << "\n";
         }
-        
-
     }   
-    //*/  
 }
