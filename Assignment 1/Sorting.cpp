@@ -96,7 +96,7 @@ void insertionSort(string items[]){
         int sortingIndex = i;
 
         //find item[i]'s spot in the already sorted part of list
-        while(sortedIndex >= 0 && isLessThan(items[sortingIndex],items[sortedIndex]) && _comparisons++){
+        while(sortedIndex >= 0 && isLessThan(items[sortingIndex],items[sortedIndex])){
             swap(items, sortedIndex, sortingIndex);
             sortedIndex --;
             sortingIndex --;
