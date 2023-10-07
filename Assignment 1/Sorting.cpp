@@ -244,8 +244,8 @@ void quickSort(string items[], int length){
         }
 
         //merge sorted each half
-        mergeSort(left, firstHalfLength);
-        mergeSort(right, secondHalfLength);
+        quickSort(left, firstHalfLength);
+        quickSort(right, secondHalfLength);
 
         //merge sorted arrays into items[]
         for (int i = 0; i < firstHalfLength; i++){
@@ -315,7 +315,7 @@ int main () {
 
 /*
     std::cout << "\nSORTED!\n\n";
-    for (int i = 0; i < NUM_OF_ITEMS; i++){
+    for (int i = 0; i < _NUM_OF_ITEMS; i++){
         std::cout << magicItems[i] << '\n';
     }
 //*/
