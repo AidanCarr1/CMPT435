@@ -22,13 +22,13 @@ int _comparisons = 0; //count comparisons for each search method
 //return true is first string comes first, false if second string is first
 bool isLessThan(string first, string second){
     
+    //+1 comparison
+    _comparisons++;
+
     //find correct length to avoid out of bound error when comparing
     int length1 = first.length();
     int length2 = second.length();
     int length = (length1<length2)? length1 : length2;
-
-    //+1 comparison
-    _comparisons++;
 
     //compare letter by letter until an alphabetically 'smaller' string is found (disregard CAPs)
     for (int i = 0; i < length; i++){
@@ -44,6 +44,31 @@ bool isLessThan(string first, string second){
     return (length1<=length2)? true : false;
 }
 
+
+//Compare 2 strings in alphabetical order
+//return true is first string comes first, false if second string is first
+bool isEqual(string first, string second){
+    
+    //+1 comparison
+    _comparisons++;
+
+    //find correct length to avoid out of bound error when comparing
+    int length1 = first.length();
+    int length2 = second.length();
+    if(length1 != length2){
+        return false;
+    }
+
+    //compare letter by letter until an unequal character string is found
+    for (int i = 0; i < length1; i++){
+        if (first.at(i) =! second.at(i)){
+            return false;
+        }
+    }
+
+    //if the two words have passed its equal
+    return true;
+}
 
 //Merge Sort Algorithm, sort given array with length (recursive)
 //From Assignment 1/Sorting.cpp
@@ -104,6 +129,11 @@ void mergeSort(string items[], int length){
 }
 
 
+//Select 42 random items from the array
+void random42(string input[], string output[]){
+    srand(time(NULL)); //set RNG seed based on current time
+
+}
 
 //Main program!
 //Open file, put into array, shuffle, sort, and print comparisons
@@ -127,16 +157,30 @@ int main () {
     else {}
 
 
-    //Shuffle items
-    //shuffle(magicItems);
-
-    //Sort
+    //Sort items
     mergeSort(magicItems, _NUM_OF_ITEMS);
     std::cout << "Merge Sort Comparisons: "  ;
     std::cout << _comparisons  << '\n';
 
+    /*
     std::cout << "\nSORTED!\n\n";
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
         std::cout << magicItems[i] << '\n';
     }
+    */
+
+    //Randomly pick 42 items from the array of magic items
+    string randomItems[42];
+    random42(magicItems, randomItems);
+
+    //Perform linear search on sorted array for each 42
+    //print number of comparisions used for each search
+    //compute and print overall average to two decimal places
+
+
+    //Perform binary search on sorted array for each same 42
+    //print number of comparisions used for each search
+    //compute and print overall average to two decimal places
+
+
 }
