@@ -102,3 +102,41 @@ void mergeSort(string items[], int length){
         }
     }
 }
+
+
+
+//Main program!
+//Open file, put into array, shuffle, sort, and print comparisons
+int main () {
+
+    //Open the file
+    ifstream itemsFile;
+    itemsFile.open(_FILE_NAME);
+    string magicItems[_NUM_OF_ITEMS]; 
+
+    string currentLine;
+    if (itemsFile.is_open()){
+
+        //assign each line to an element in the array
+        for (int i = 0; i < _NUM_OF_ITEMS; i++){
+            std::getline(itemsFile, currentLine);
+            magicItems[i] = currentLine;
+        }
+    }
+
+    else {}
+
+
+    //Shuffle items
+    //shuffle(magicItems);
+
+    //Sort
+    mergeSort(magicItems, _NUM_OF_ITEMS);
+    std::cout << "Merge Sort Comparisons: "  ;
+    std::cout << _comparisons  << '\n';
+
+    std::cout << "\nSORTED!\n\n";
+    for (int i = 0; i < _NUM_OF_ITEMS; i++){
+        std::cout << magicItems[i] << '\n';
+    }
+}
