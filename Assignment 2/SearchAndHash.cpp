@@ -16,7 +16,7 @@ using namespace std;
 const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
 int _comparisons = 0; //count comparisons for each search method
-
+int _SUB_ITEMS = 42; //CONSTANT number of items for searching
 
 void setMagicItemsArray(string items[]){ 
     //Open the file
@@ -79,7 +79,7 @@ bool isEqual(string first, string second){
 
     //compare letter by letter until an unequal character string is found
     for (int i = 0; i < length1; i++){
-        if (first.at(i) =! second.at(i)){
+        if ((first.at(i)) != (second.at(i))){
             return false;
         }
     }
@@ -180,8 +180,18 @@ void random42(string input[], string output[]){
 }
 
 
+//Linear search
+int linearSearch(string items[], string item){
+    for(int i = 0; i < _NUM_OF_ITEMS; i++){
+        if(isEqual(items[i], item)){
+            return i;
+        }
+    }
+    return -1;
+}
+
 //Main program!
-//Open file, put into array, shuffle, sort, and print comparisons
+//Open file, put into array, pick random 42, search, and print comparisons
 int main () {
 
     //put 666 magic items into magicItems array
@@ -195,8 +205,8 @@ int main () {
 
     //Sort the magic items
     mergeSort(magicItems, _NUM_OF_ITEMS);
-    std::cout << "Merge Sort Comparisons: "  ;
-    std::cout << _comparisons  << '\n';
+    //std::cout << "Merge Sort Comparisons: "  ;
+    //std::cout << _comparisons  << '\n';
 
 
     /*
@@ -212,9 +222,25 @@ int main () {
     //*/
     
 
-    //Perform linear search on sorted array for each 42
-    //print number of comparisions used for each search
-    //compute and print overall average to two decimal places
+    //Linear search on sorted array for each of the 42 items
+    int linearComparisons = 0;
+    string item;
+    int index;
+    for (int i = 0; i < 42; i++){
+        
+        _comparisons = 0;
+        item = randomItems[i];
+        index = linearSearch(magicItems, item);
+        linearComparisons += _comparisons;
+
+        //print num of comparisons for the item
+        std::cout << item << "\n\tComparisons: " << _comparisons << "\n";
+    }
+
+    //calculate avg comparisons, round 2 decimal place, print
+    float avgLinearComparisons = linearComparisons / 42.0;
+    avgLinearComparisons = (int) ((avgLinearComparisons + 0.005) * 100) / 100.0;
+    std::cout << "Average Linear Sort Comparisons: "<< avgLinearComparisons;
 
 
     //Perform binary search on sorted array for each same 42
