@@ -1,5 +1,5 @@
 // Aidan Carr
-// October 18, 2023
+// October 20, 2023
 // Searching and Hashing
 
 //Compiled using g++
@@ -16,6 +16,24 @@ using namespace std;
 const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
 int _comparisons = 0; //count comparisons for each search method
+
+
+void setMagicItemsArray(string items[]){ 
+    //Open the file
+    ifstream itemsFile;
+    itemsFile.open(_FILE_NAME);
+
+    string currentLine;
+    if (itemsFile.is_open()){
+
+        //assign each line to an element in the array
+        for (int i = 0; i < _NUM_OF_ITEMS; i++){
+            std::getline(itemsFile, currentLine);
+            items[i] = currentLine;
+        }
+    }
+    else {}
+}
 
 
 //Compare 2 strings in alphabetical order
@@ -69,6 +87,31 @@ bool isEqual(string first, string second){
     //if the two words have passed its equal
     return true;
 }
+
+
+//Swap 2 element positions given the array and both positions 
+void swap(string items[], int position1, int position2){
+    string temp = items[position1];
+    items[position1] = items[position2];
+    items[position2] = temp;
+}
+
+
+//Shuffle the given array O(n)
+void shuffle(string items[]){
+    srand(time(NULL)); //set RNG seed based on current time
+
+    int length = _NUM_OF_ITEMS;
+    int randomIndex;
+    for (int i = length-1; i > 0; i--){
+        randomIndex = rand() % i;
+        swap(items,i,randomIndex);
+    }
+
+    //reset comparisons count after each shuffle
+    _comparisons = 0;
+}
+
 
 //Merge Sort Algorithm, sort given array with length (recursive)
 //From Assignment 1/Sorting.cpp
@@ -131,47 +174,43 @@ void mergeSort(string items[], int length){
 
 //Select 42 random items from the array
 void random42(string input[], string output[]){
-    srand(time(NULL)); //set RNG seed based on current time
-
+    for(int i = 0; i < 42; i++){
+        output[i] = input[i];
+    }
 }
+
 
 //Main program!
 //Open file, put into array, shuffle, sort, and print comparisons
 int main () {
 
-    //Open the file
-    ifstream itemsFile;
-    itemsFile.open(_FILE_NAME);
-    string magicItems[_NUM_OF_ITEMS]; 
+    //put 666 magic items into magicItems array
+    string magicItems[_NUM_OF_ITEMS];
+    setMagicItemsArray(magicItems);
 
-    string currentLine;
-    if (itemsFile.is_open()){
+    //Shuffle the magic items, store the names the first 42
+    string randomItems[42];
+    shuffle(magicItems);
+    random42(magicItems, randomItems);
 
-        //assign each line to an element in the array
-        for (int i = 0; i < _NUM_OF_ITEMS; i++){
-            std::getline(itemsFile, currentLine);
-            magicItems[i] = currentLine;
-        }
-    }
-
-    else {}
-
-
-    //Sort items
+    //Sort the magic items
     mergeSort(magicItems, _NUM_OF_ITEMS);
     std::cout << "Merge Sort Comparisons: "  ;
     std::cout << _comparisons  << '\n';
+
 
     /*
     std::cout << "\nSORTED!\n\n";
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
         std::cout << magicItems[i] << '\n';
     }
-    */
 
-    //Randomly pick 42 items from the array of magic items
-    string randomItems[42];
-    random42(magicItems, randomItems);
+    std::cout << "\n42!\n\n";
+    for (int i = 0; i < 42; i++){
+        std::cout << randomItems[i] << '\n';
+    }
+    //*/
+    
 
     //Perform linear search on sorted array for each 42
     //print number of comparisions used for each search
