@@ -39,7 +39,7 @@ void setMagicItemsArray(string items[]){
 
 //Compare 2 strings in alphabetical order
 //return true is first string comes first, false if second string is first
-bool isLessThan(string first, string second){
+bool isLessThanOrEqual(string first, string second){
     
     //+1 comparison
     _comparisons++;
@@ -60,6 +60,7 @@ bool isLessThan(string first, string second){
     }
 
     //tie goes to the shorter string
+    //if equal: return true!
     return (length1<=length2)? true : false;
 }
 
@@ -157,7 +158,7 @@ void mergeSort(string items[], int length){
             }
 
             //sort 2 ordered arrays into one larger array
-            else if (isLessThan(half1[firstPos],half2[secondPos])){
+            else if (isLessThanOrEqual(half1[firstPos],half2[secondPos])){
                 items[sortingPos] = half1[firstPos];
                 firstPos ++;
             }
@@ -181,7 +182,7 @@ void random42(string input[], string output[]){
 }
 
 
-//Linear search
+//Linear Search, find target in O(n) complexity
 int linearSearch(string items[], string target){
     for(int i = 0; i < _NUM_OF_ITEMS; i++){
         if(isEqual(items[i], target)){
@@ -192,14 +193,15 @@ int linearSearch(string items[], string target){
 }
 
 
-//binary search
+//Binary Search, find target in O(log2n) complexity
+//psuedocode from CLRS textbook
 int binarySearch(string items[], string target){
     int low = 0;
     int high = _NUM_OF_ITEMS;
     int mid;
     while(low < high){
         mid = floor((low+high)/2);
-        if(isLessThan(target, items[mid])){
+        if(isLessThanOrEqual(target, items[mid])){
             high = mid;
         }
         else{
@@ -260,12 +262,25 @@ int main () {
     //calculate avg comparisons, round 2 decimal place, print
     float avgLinearComparisons = linearComparisons / 42.0;
     avgLinearComparisons = (int) ((avgLinearComparisons + 0.005) * 100) / 100.0;
-    std::cout << "Average Linear Sort Comparisons: "<< avgLinearComparisons;
+    std::cout << "\nAverage Linear Sort Comparisons: "<< avgLinearComparisons << "\n\n";
 
 
-    //Perform binary search on sorted array for each same 42
-    //print number of comparisions used for each search
-    //compute and print overall average to two decimal places
+    //Perform binary search on sorted array for each of the same 42 items
+    int binaryComparisons = 0;
+    for (int i = 0; i < 42; i++){
+        
+        _comparisons = 0;
+        item = randomItems[i];
+        index = binarySearch(magicItems, item);
+        binaryComparisons += _comparisons;
 
+        //print num of comparisons for the item
+        std::cout << item << "\n\tComparisons: " << _comparisons << "\n";
+    }
+
+    //calculate avg comparisons, round 2 decimal place, print
+    float avgBinaryComparisons = binaryComparisons / 42.0;
+    avgBinaryComparisons = (int) ((avgBinaryComparisons + 0.005) * 100) / 100.0;
+    std::cout << "\nAverage Binary Sort Comparisons: "<< avgBinaryComparisons << "\n\n";
 
 }
