@@ -18,7 +18,10 @@ const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
 int _comparisons = 0; //count comparisons for each search method
 int _SUB_ITEMS = 42; //CONSTANT number of items for searching
+int _HASH_TABLE_SIZE = 250; //CONSTANT number of "spots" in hash table
 
+
+//populate magicItems[] with the item names from the txt file
 void setMagicItemsArray(string items[]){ 
     //Open the file
     ifstream itemsFile;
@@ -38,7 +41,7 @@ void setMagicItemsArray(string items[]){
 
 
 //Compare 2 strings in alphabetical order
-//return true is first string comes first, false if second string is first
+//return true is first string comes first or they are equal, false if second string is first
 bool isLessThanOrEqual(string first, string second){
     
     //+1 comparison
@@ -60,7 +63,7 @@ bool isLessThanOrEqual(string first, string second){
     }
 
     //tie goes to the shorter string
-    //if equal: return true!
+    //if lengths are equal, strings are equal at this point: return true!
     return (length1<=length2)? true : false;
 }
 
@@ -194,7 +197,7 @@ int linearSearch(string items[], string target){
 
 
 //Binary Search, find target in O(log2n) complexity
-//psuedocode from CLRS textbook
+//Psuedocode from CLRS textbook pg 799
 int binarySearch(string items[], string target){
     int low = 0;
     int high = _NUM_OF_ITEMS;
@@ -244,7 +247,7 @@ int main () {
     //*/
     
 
-    //Linear search on sorted array for each of the 42 items
+    //LINEAR SEARCH on sorted array for each of the 42 items
     int linearComparisons = 0;
     string item;
     int index;
@@ -265,7 +268,7 @@ int main () {
     std::cout << "\nAverage Linear Sort Comparisons: "<< avgLinearComparisons << "\n\n";
 
 
-    //Perform binary search on sorted array for each of the same 42 items
+    //BINARY SEARCH on sorted array for each of the same 42 items
     int binaryComparisons = 0;
     for (int i = 0; i < 42; i++){
         
@@ -283,4 +286,10 @@ int main () {
     avgBinaryComparisons = (int) ((avgBinaryComparisons + 0.005) * 100) / 100.0;
     std::cout << "\nAverage Binary Sort Comparisons: "<< avgBinaryComparisons << "\n\n";
 
+
+    //load HASH TABLE with all 666 items
+
+    //SEARCH hash table for each of the same 42 items
+
+    //Print comparisons (get = +1, chaining = +a)
 }
