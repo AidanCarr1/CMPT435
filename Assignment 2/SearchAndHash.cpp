@@ -9,6 +9,7 @@
 #include <string>
 #include <cctype>
 #include <time.h>
+#include <cmath>
 using namespace std;
 
 
@@ -79,7 +80,7 @@ bool isEqual(string first, string second){
 
     //compare letter by letter until an unequal character string is found
     for (int i = 0; i < length1; i++){
-        if ((first.at(i)) != (second.at(i))){
+        if (first.at(i) != second.at(i)){
             return false;
         }
     }
@@ -181,14 +182,33 @@ void random42(string input[], string output[]){
 
 
 //Linear search
-int linearSearch(string items[], string item){
+int linearSearch(string items[], string target){
     for(int i = 0; i < _NUM_OF_ITEMS; i++){
-        if(isEqual(items[i], item)){
+        if(isEqual(items[i], target)){
             return i;
         }
     }
     return -1;
 }
+
+
+//binary search
+int binarySearch(string items[], string target){
+    int low = 0;
+    int high = _NUM_OF_ITEMS;
+    int mid;
+    while(low < high){
+        mid = floor((low+high)/2);
+        if(isLessThan(target, items[mid])){
+            high = mid;
+        }
+        else{
+            low = mid + 1;
+        }
+    }
+    return high;
+}
+
 
 //Main program!
 //Open file, put into array, pick random 42, search, and print comparisons
