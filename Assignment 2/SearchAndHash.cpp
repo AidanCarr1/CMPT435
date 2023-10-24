@@ -215,6 +215,56 @@ int binarySearch(string items[], string target){
 }
 
 
+//Node class, used for each element in a hash table
+class Node {
+
+public:
+    string itemName;
+    Node* next;
+
+    //Constructors
+    Node(string itemNameInput){
+        itemName = itemNameInput;
+        next = nullptr;
+    }
+    Node(){
+        itemName = "";
+        next = nullptr;
+    }
+};
+
+
+//Make a hash code given a string, output an index
+int makeHashCode(string item){
+
+    //given item, make upper case
+    //add up the ASCII values
+    //return (this number % 250)
+}
+
+
+//Insert a string into a given hash table
+void insert(Node* hashTable[], string item){
+    
+    //find the hash location
+    int index = makeHashCode(item);
+    //create a node
+    //add item to hashTable in that index
+    //follow the chain and place at the end
+
+}
+
+
+//Search the hash table for the string, return the index
+int hashSearch(Node* hashTable[], string item){
+    
+    //index = hashcode the item
+    //check hashtable[index]
+    //check the chain
+    //return index
+    //return -1 if not found
+}
+
 //Main program!
 //Open file, put into array, pick random 42, search, and print comparisons
 int main () {
@@ -265,7 +315,7 @@ int main () {
     //calculate avg comparisons, round 2 decimal place, print
     float avgLinearComparisons = linearComparisons / 42.0;
     avgLinearComparisons = (int) ((avgLinearComparisons + 0.005) * 100) / 100.0;
-    std::cout << "\nAverage Linear Sort Comparisons: "<< avgLinearComparisons << "\n\n";
+    std::cout << "\nAverage Linear Search Comparisons: "<< avgLinearComparisons << "\n\n";
 
 
     //BINARY SEARCH on sorted array for each of the same 42 items
@@ -284,12 +334,32 @@ int main () {
     //calculate avg comparisons, round 2 decimal place, print
     float avgBinaryComparisons = binaryComparisons / 42.0;
     avgBinaryComparisons = (int) ((avgBinaryComparisons + 0.005) * 100) / 100.0;
-    std::cout << "\nAverage Binary Sort Comparisons: "<< avgBinaryComparisons << "\n\n";
+    std::cout << "\nAverage Binary Search Comparisons: "<< avgBinaryComparisons << "\n\n";
 
+
+    //create hash table
+    Node* magicHash[_HASH_TABLE_SIZE];
 
     //load HASH TABLE with all 666 items
+    for (int i = 0; i < _NUM_OF_ITEMS; i++){
+        insert(magicHash,magicItems[i]);
+    }
 
     //SEARCH hash table for each of the same 42 items
+    int hashComparisons = 0;
+    for (int i = 0; i < 42; i++){
+        
+        _comparisons = 0;
+        item = randomItems[i];
+        index = hashSearch(magicHash, item);
+        hashComparisons += _comparisons;
 
-    //Print comparisons (get = +1, chaining = +a)
+        //print num of comparisons for the item
+        std::cout << item << "\n\tComparisons: " << _comparisons << "\n";
+    }
+
+    //calculate avg comparisons (get and chaining), round 2 decimal place, print
+    float avgHashComparisons = hashComparisons / 42.0;
+    avgHashComparisons = (int) ((avgHashComparisons + 0.005) * 100) / 100.0;
+    std::cout << "\nAverage Hash Search Comparisons: "<< avgHashComparisons << "\n\n";
 }
