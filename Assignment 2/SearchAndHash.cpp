@@ -234,12 +234,14 @@ public:
 };
 
 
-//Make a hash code given a string, output an index
+//Make a hash code: given a string, output an index
 int makeHashCode(string item){
-
-    //given item, make upper case
-    //add up the ASCII values
-    //return (this number % 250)
+    int asciiTotal = 0;
+    //Add up the ASCII values of all chars in the item
+    for(int i = 0; i < item.length(); i++){
+        asciiTotal += item[i];
+    }
+    return asciiTotal % _HASH_TABLE_SIZE;
 }
 
 
@@ -249,9 +251,19 @@ void insert(Node* hashTable[], string item){
     //find the hash location
     int index = makeHashCode(item);
     //create a node
-    //add item to hashTable in that index
-    //follow the chain and place at the end
+    Node myNode(item);
+    cout << index << "\n";
+    
+    return;
 
+    //if first item in chain, place in hashtable array
+    if(hashTable[index] == nullptr){
+        hashTable[index] = &myNode;
+    }
+    //follow the chain and place at the end
+    else{
+        
+    }
 }
 
 
@@ -342,8 +354,9 @@ int main () {
 
     //load HASH TABLE with all 666 items
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
-        insert(magicHash,magicItems[i]);
+        insert(magicHash, magicItems[i]);
     }
+
 
     //SEARCH hash table for each of the same 42 items
     int hashComparisons = 0;
@@ -351,7 +364,7 @@ int main () {
         
         _comparisons = 0;
         item = randomItems[i];
-        index = hashSearch(magicHash, item);
+        index = 15;//hashSearch(magicHash, item);
         hashComparisons += _comparisons;
 
         //print num of comparisons for the item
