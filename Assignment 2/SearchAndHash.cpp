@@ -21,6 +21,31 @@ int _SUB_ITEMS = 42; //CONSTANT number of items for searching
 int _HASH_TABLE_SIZE = 250; //CONSTANT number of "spots" in hash table
 
 
+
+//Node class, used for each element in a hash table
+    //From Assignment 1/Palindrome.cpp
+class Node {
+
+public:
+    string itemName;
+    Node* next;
+
+    //Constructors
+    Node(string itemNameInput){
+        itemName = itemNameInput;
+        next = nullptr;
+    }
+    Node(){
+        itemName = "";
+        next = nullptr;
+    }
+    //Desctructor
+    ~Node(){
+    }
+};
+
+
+
 //populate magicItems[] with the item names from the txt file
 void setMagicItemsArray(string items[]){ 
     //Open the file
@@ -209,28 +234,10 @@ int binarySearch(string items[], string target){
 }
 
 
-//Node class, used for each element in a hash table
-    //From Assignment 1/Palindrome.cpp
-class Node {
-
-public:
-    string itemName;
-    Node* next;
-
-    //Constructors
-    Node(string itemNameInput){
-        itemName = itemNameInput;
-        next = nullptr;
-    }
-    Node(){
-        itemName = "";
-        next = nullptr;
-    }
-};
-
 
 //Make a hash code: given a string, output an index
 int makeHashCode(string item){
+    
     int asciiTotal = 0;
     //Add up the ASCII values of all chars in the item
     for(int i = 0; i < item.length(); i++){
@@ -244,12 +251,13 @@ int makeHashCode(string item){
 void insert(Node* hashTable[], string item){
     
     //find the hash location
+    //std::cout << " index: " << std::endl;
     int index = makeHashCode(item);
+    //std::cout << " back to insert() " << std::endl;
+//ERROR: code is exiting around here at around 500-600 items, different place everytime
     //create a node
     Node myNode(item);
-    cout << index << "\n";
-
-    return;
+    std::cout << "Index: " << index << std::endl;
 
     //if first item in chain, place in hashtable array
     if(hashTable[index] == nullptr){
@@ -266,17 +274,32 @@ void insert(Node* hashTable[], string item){
         }
         temp->next = &myNode;
     }
+    //delete myNode;
 }
 
 
 //Search the hash table for the string, return the index
 int hashSearch(Node* hashTable[], string item){
     
-    //index = hashcode the item
-    //check hashtable[index]
+    //find the hash location
+    int index = makeHashCode(item);
+    if(isEqual(hashTable[index]->itemName, item)){
+        return index;
+    }
     //check the chain
-    //return index
-    //return -1 if not found
+    else{
+        Node *temp;                 
+        temp = hashTable[index]->next;
+        //is next spot availible? if not, move to next node
+        while(temp == NULL){
+            if(isEqual(temp->itemName, item)){
+                return index;
+            }
+            temp = temp->next;
+        }
+        //not found in chain
+        return -1;
+    }
 }
 
 //Main program!
@@ -288,36 +311,23 @@ int main () {
     setMagicItemsArray(magicItems);
 
     //Shuffle the magic items, store the names the first 42
-    string randomItems[42];
+    string randomItems[_SUB_ITEMS];
     shuffle(magicItems);
-    for(int i = 0; i < 42; i++){
+    for(int i = 0; i < _SUB_ITEMS; i++){
         randomItems[i] = magicItems[i];
     }
 
     //Sort the magic items
     mergeSort(magicItems, _NUM_OF_ITEMS);
-    //std::cout << "Merge Sort Comparisons: "  ;
-    //std::cout << _comparisons  << '\n';
+    //std::cout << "Merge Sort Comparisons: " << std::endl;
+    //std::cout << _comparisons  << std::endl;
 
-
-    /*
-    std::cout << "\nSORTED!\n\n";
-    for (int i = 0; i < _NUM_OF_ITEMS; i++){
-        std::cout << magicItems[i] << '\n';
-    }
-
-    std::cout << "\n42!\n\n";
-    for (int i = 0; i < 42; i++){
-        std::cout << randomItems[i] << '\n';
-    }
-    //*/
-    
 
     //LINEAR SEARCH on sorted array for each of the 42 items
     int linearComparisons = 0;
     string item;
     int index;
-    for (int i = 0; i < 42; i++){
+    for (int i = 0; i < _SUB_ITEMS; i++){
         
         _comparisons = 0;
         item = randomItems[i];
@@ -325,18 +335,18 @@ int main () {
         linearComparisons += _comparisons;
 
         //print num of comparisons for the item
-        std::cout << item << "\n\tComparisons: " << _comparisons << "\n";
+        std::cout << item << "\n\tComparisons: " << _comparisons << std::endl;
     }
 
     //calculate avg comparisons, round 2 decimal place, print
     float avgLinearComparisons = linearComparisons / 42.0;
     avgLinearComparisons = (int) ((avgLinearComparisons + 0.005) * 100) / 100.0;
-    std::cout << "\nAverage Linear Search Comparisons: "<< avgLinearComparisons << "\n\n";
+    std::cout << "\nAverage Linear Search Comparisons: "<< avgLinearComparisons << "\n" << std::endl;
 
 
     //BINARY SEARCH on sorted array for each of the same 42 items
     int binaryComparisons = 0;
-    for (int i = 0; i < 42; i++){
+    for (int i = 0; i < _SUB_ITEMS; i++){
         
         _comparisons = 0;
         item = randomItems[i];
@@ -344,39 +354,42 @@ int main () {
         binaryComparisons += _comparisons;
 
         //print num of comparisons for the item
-        std::cout << item << "\n\tComparisons: " << _comparisons << "\n";
+        std::cout << item << "\n\tComparisons: " << _comparisons << std::endl;
     }
 
     //calculate avg comparisons, round 2 decimal place, print
-    float avgBinaryComparisons = binaryComparisons / 42.0;
+    float avgBinaryComparisons = (float) binaryComparisons / _SUB_ITEMS;
     avgBinaryComparisons = (int) ((avgBinaryComparisons + 0.005) * 100) / 100.0;
-    std::cout << "\nAverage Binary Search Comparisons: "<< avgBinaryComparisons << "\n\n";
+    std::cout << "\nAverage Binary Search Comparisons: "<< avgBinaryComparisons << "\n" << std::endl;
 
 
-    //create hash table
+    //create an empty hash table
     Node* magicHash[_HASH_TABLE_SIZE];
+    for (int i = 0; i < _HASH_TABLE_SIZE; i++){
+        magicHash[i] = nullptr;
+    }
 
     //load HASH TABLE with all 666 items
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
         insert(magicHash, magicItems[i]);
     }
-
+    //std::cout << "Finished" << std::endl;
 
     //SEARCH hash table for each of the same 42 items
     int hashComparisons = 0;
-    for (int i = 0; i < 42; i++){
+    for (int i = 0; i < _SUB_ITEMS; i++){
         
         _comparisons = 0;
         item = randomItems[i];
-        index = 15;//hashSearch(magicHash, item);
+        index = hashSearch(magicHash, item);
         hashComparisons += _comparisons;
 
         //print num of comparisons for the item
-        std::cout << item << "\n\tComparisons: " << _comparisons << "\n";
+        std::cout << item << "\n\tComparisons: " << _comparisons << std::endl;
     }
 
     //calculate avg comparisons (get and chaining), round 2 decimal place, print
-    float avgHashComparisons = hashComparisons / 42.0;
+    float avgHashComparisons = (float) hashComparisons / _SUB_ITEMS;
     avgHashComparisons = (int) ((avgHashComparisons + 0.005) * 100) / 100.0;
-    std::cout << "\nAverage Hash Search Comparisons: "<< avgHashComparisons << "\n\n";
+    std::cout << "\nAverage Hash Search Comparisons: "<< avgHashComparisons << "\n" << std::endl;
 }
