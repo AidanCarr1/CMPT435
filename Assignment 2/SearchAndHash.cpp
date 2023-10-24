@@ -18,7 +18,7 @@ const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
 int _comparisons = 0; //count comparisons for each search method
 int _SUB_ITEMS = 42; //CONSTANT number of items for searching
-int _HASH_TABLE_SIZE = 250; //CONSTANT number of "spots" in hash table
+int _HASH_TABLE_SIZE = 150; //CONSTANT number of "spots" in hash table
 
 
 
@@ -103,7 +103,7 @@ bool isEqual(string first, string second){
     //find correct length to avoid out of bound error when comparing
     int length1 = first.length();
     int length2 = second.length();
-    if(length1 != length2){
+    if (length1 != length2){
         return false;
     }
 
@@ -206,8 +206,8 @@ void mergeSort(string items[], int length){
 
 //Linear Search, find target in O(n) complexity
 int linearSearch(string items[], string target){
-    for(int i = 0; i < _NUM_OF_ITEMS; i++){
-        if(isEqual(items[i], target)){
+    for (int i = 0; i < _NUM_OF_ITEMS; i++){
+        if (isEqual(items[i], target)){
             return i;
         }
     }
@@ -221,12 +221,12 @@ int binarySearch(string items[], string target){
     int low = 0;
     int high = _NUM_OF_ITEMS;
     int mid;
-    while(low < high){
+    while (low < high){
         mid = floor((low+high)/2);
-        if(isLessThanOrEqual(target, items[mid])){
+        if (isLessThanOrEqual(target, items[mid])){
             high = mid;
         }
-        else{
+        else {
             low = mid + 1;
         }
     }
@@ -240,7 +240,7 @@ int makeHashCode(string item){
     
     int asciiTotal = 0;
     //Add up the ASCII values of all chars in the item
-    for(int i = 0; i < item.length(); i++){
+    for (int i = 0; i < item.length(); i++){
         asciiTotal += item[i];
     }
     return asciiTotal % _HASH_TABLE_SIZE;
@@ -251,21 +251,20 @@ int makeHashCode(string item){
 void insert(Node* hashTable[], string item){
     
     //find the hash location
-    //std::cout << " index: " << std::endl;
+    //std::cout << " index: " << std::endl; // test line
     int index = makeHashCode(item);
-    //std::cout << " back to insert() " << std::endl;
-//ERROR: code is exiting around here at around 500-600 items, different place everytime
+    //std::cout << " back to insert() " << std::endl; // test line
     //create a node
     Node myNode(item);
-    std::cout << "Index: " << index << std::endl;
+    std::cout << "Index: " << index << std::endl; // test line
 
     //if first item in chain, place in hashtable array
-    if(hashTable[index] == nullptr){
+    if (hashTable[index] == nullptr){
         hashTable[index] = &myNode;
     }
     //follow the chain and place at the end
         //linked list traversal, help from codesdope.com
-    else{
+    else {
         Node *temp;                 
         temp = hashTable[index];
         //is next spot availible? if not, move to next node
@@ -282,17 +281,28 @@ void insert(Node* hashTable[], string item){
 int hashSearch(Node* hashTable[], string item){
     
     //find the hash location
+    //std::cout << "making code"<< std::endl; // test line
     int index = makeHashCode(item);
-    if(isEqual(hashTable[index]->itemName, item)){
+//ERROR: this function CANNOT reach hashTable[index]->itemName
+//scope thing? point thing?
+    std::cout << hashTable[index]->itemName << std::endl; // test line
+    std::cout << "checking first equal" << std::endl; // test line
+    if (hashTable[index] == nullptr){
+        std::cout << "nothing in its index" << std::endl; // test line
+        return -1;
+    } 
+    else if (isEqual(item, hashTable[index]->itemName)){
+        std::cout << "first IS equal" << std::endl; // test line
         return index;
-    }
-    //check the chain
-    else{
+    }   
+    else {
+        //check the chain
+        std::cout << "checking chain" << std::endl; // test line
         Node *temp;                 
         temp = hashTable[index]->next;
         //is next spot availible? if not, move to next node
-        while(temp == NULL){
-            if(isEqual(temp->itemName, item)){
+        while (temp == NULL){
+            if (isEqual(temp->itemName, item)){
                 return index;
             }
             temp = temp->next;
@@ -300,6 +310,7 @@ int hashSearch(Node* hashTable[], string item){
         //not found in chain
         return -1;
     }
+    std::cout << "done"<< std::endl; // test line
 }
 
 //Main program!
@@ -313,14 +324,14 @@ int main () {
     //Shuffle the magic items, store the names the first 42
     string randomItems[_SUB_ITEMS];
     shuffle(magicItems);
-    for(int i = 0; i < _SUB_ITEMS; i++){
+    for (int i = 0; i < _SUB_ITEMS; i++){
         randomItems[i] = magicItems[i];
     }
 
     //Sort the magic items
     mergeSort(magicItems, _NUM_OF_ITEMS);
-    //std::cout << "Merge Sort Comparisons: " << std::endl;
-    //std::cout << _comparisons  << std::endl;
+    //std::cout << "Merge Sort Comparisons: " << std::endl; // test line
+    //std::cout << _comparisons  << std::endl; // test line
 
 
     //LINEAR SEARCH on sorted array for each of the 42 items
@@ -373,7 +384,8 @@ int main () {
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
         insert(magicHash, magicItems[i]);
     }
-    //std::cout << "Finished" << std::endl;
+    //std::cout << "Finished hash inserts" << std::endl; // test line
+
 
     //SEARCH hash table for each of the same 42 items
     int hashComparisons = 0;
@@ -381,11 +393,14 @@ int main () {
         
         _comparisons = 0;
         item = randomItems[i];
+        //std::cout << "presearch"<< std::endl; // test line
         index = hashSearch(magicHash, item);
         hashComparisons += _comparisons;
 
         //print num of comparisons for the item
         std::cout << item << "\n\tComparisons: " << _comparisons << std::endl;
+        std::cout << index << "\nIndex: " << index << std::endl; // test line
+
     }
 
     //calculate avg comparisons (get and chaining), round 2 decimal place, print
