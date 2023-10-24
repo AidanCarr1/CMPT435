@@ -95,6 +95,7 @@ bool isEqual(string first, string second){
 
 
 //Swap 2 element positions given the array and both positions 
+    //From Assignment 1/Sorting.cpp
 void swap(string items[], int position1, int position2){
     string temp = items[position1];
     items[position1] = items[position2];
@@ -103,6 +104,7 @@ void swap(string items[], int position1, int position2){
 
 
 //Shuffle the given array O(n)
+    //From Assignment 1/Sorting.cpp
 void shuffle(string items[]){
     srand(time(NULL)); //set RNG seed based on current time
 
@@ -119,7 +121,7 @@ void shuffle(string items[]){
 
 
 //Merge Sort Algorithm, sort given array with length (recursive)
-//From Assignment 1/Sorting.cpp
+    //From Assignment 1/Sorting.cpp
 void mergeSort(string items[], int length){
     //Base case: when length 1, start conquering, until then, divide
     if (length > 1){
@@ -177,14 +179,6 @@ void mergeSort(string items[], int length){
 }
 
 
-//Select 42 random items from the array
-void random42(string input[], string output[]){
-    for(int i = 0; i < 42; i++){
-        output[i] = input[i];
-    }
-}
-
-
 //Linear Search, find target in O(n) complexity
 int linearSearch(string items[], string target){
     for(int i = 0; i < _NUM_OF_ITEMS; i++){
@@ -197,7 +191,7 @@ int linearSearch(string items[], string target){
 
 
 //Binary Search, find target in O(log2n) complexity
-//Psuedocode from CLRS textbook pg 799
+    //Psuedocode from CLRS textbook pg 799
 int binarySearch(string items[], string target){
     int low = 0;
     int high = _NUM_OF_ITEMS;
@@ -216,6 +210,7 @@ int binarySearch(string items[], string target){
 
 
 //Node class, used for each element in a hash table
+    //From Assignment 1/Palindrome.cpp
 class Node {
 
 public:
@@ -253,7 +248,7 @@ void insert(Node* hashTable[], string item){
     //create a node
     Node myNode(item);
     cout << index << "\n";
-    
+
     return;
 
     //if first item in chain, place in hashtable array
@@ -261,8 +256,15 @@ void insert(Node* hashTable[], string item){
         hashTable[index] = &myNode;
     }
     //follow the chain and place at the end
+        //linked list traversal, help from codesdope.com
     else{
-        
+        Node *temp;                 
+        temp = hashTable[index];
+        //is next spot availible? if not, move to next node
+        while(temp->next != nullptr){
+            temp = temp->next;
+        }
+        temp->next = &myNode;
     }
 }
 
@@ -288,7 +290,9 @@ int main () {
     //Shuffle the magic items, store the names the first 42
     string randomItems[42];
     shuffle(magicItems);
-    random42(magicItems, randomItems);
+    for(int i = 0; i < 42; i++){
+        randomItems[i] = magicItems[i];
+    }
 
     //Sort the magic items
     mergeSort(magicItems, _NUM_OF_ITEMS);
