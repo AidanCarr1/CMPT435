@@ -18,7 +18,7 @@ const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
 int _comparisons = 0; //count comparisons for each search method
 int _SUB_ITEMS = 42; //CONSTANT number of items for searching
-int _HASH_TABLE_SIZE = 150; //CONSTANT number of "spots" in hash table
+int _HASH_TABLE_SIZE = 250; //CONSTANT number of "spots" in hash table
 
 
 
@@ -39,8 +39,8 @@ public:
         itemName = "";
         next = nullptr;
     }
-    //Desctructor
-    ~Node(){
+    //Desctructor 
+    ~Node(){ // test line, might not need this
     }
 };
 
@@ -260,20 +260,28 @@ void insert(Node* hashTable[], string item){
 
     //if first item in chain, place in hashtable array
     if (hashTable[index] == nullptr){
+        std::cout << "null ptr" << std::endl; // test line
         hashTable[index] = &myNode;
     }
     //follow the chain and place at the end
         //linked list traversal, help from codesdope.com
+//ERROR: when chaining, not placing correctly
+//FIX: include a tail
     else {
         Node *temp;                 
         temp = hashTable[index];
         //is next spot availible? if not, move to next node
+        std::cout << "\ttest" << std::endl; // test line
+        std::cout << "\t" << temp->itemName << std::endl; // test line
         while(temp->next != nullptr){
+            std::cout << "\t" << temp->itemName << std::endl; // test line
             temp = temp->next;
         }
         temp->next = &myNode;
     }
-    //delete myNode;
+    //Should be printing out the first in chain:
+    //std::cout << hashTable[index]->itemName << std::endl; // test line
+
 }
 
 
@@ -285,6 +293,8 @@ int hashSearch(Node* hashTable[], string item){
     int index = makeHashCode(item);
 //ERROR: this function CANNOT reach hashTable[index]->itemName
 //scope thing? point thing?
+    std::cout << hashTable[index] << std::endl; // test line
+    std::cout << "ERROR: " << std::endl; // test line
     std::cout << hashTable[index]->itemName << std::endl; // test line
     std::cout << "checking first equal" << std::endl; // test line
     if (hashTable[index] == nullptr){
@@ -384,7 +394,7 @@ int main () {
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
         insert(magicHash, magicItems[i]);
     }
-    //std::cout << "Finished hash inserts" << std::endl; // test line
+    std::cout << "Finished hash inserts" << std::endl; // test line
 
 
     //SEARCH hash table for each of the same 42 items
