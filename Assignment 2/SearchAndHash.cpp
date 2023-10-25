@@ -40,8 +40,8 @@ public:
         next = nullptr;
     }
     //Desctructor 
-    ~Node(){ // test line, might not need this
-    }
+    //~Node(){ // test line, might not need this
+    //}
 };
 
 
