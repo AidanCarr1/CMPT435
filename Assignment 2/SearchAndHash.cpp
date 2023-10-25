@@ -251,13 +251,16 @@ int makeHashCode(string item){
 void insert(Node* hashTable[], string item){
     
     //find the hash location
-    //std::cout << " index: " << std::endl; // test line
     int index = makeHashCode(item);
-    //std::cout << " back to insert() " << std::endl; // test line
+    
     //create a node
     Node myNode(item);
-    std::cout << "Index: " << index << std::endl; // test line
 
+    //place this node in front of previous node at hash index
+    myNode.next = hashTable[index];
+    hashTable[index] = &myNode;
+
+    /*
     //if first item in chain, place in hashtable array
     if (hashTable[index] == nullptr){
         std::cout << "null ptr" << std::endl; // test line
@@ -281,7 +284,7 @@ void insert(Node* hashTable[], string item){
     }
     //Should be printing out the first in chain:
     //std::cout << hashTable[index]->itemName << std::endl; // test line
-
+    */
 }
 
 
@@ -289,7 +292,6 @@ void insert(Node* hashTable[], string item){
 int hashSearch(Node* hashTable[], string item){
     
     //find the hash location
-    //std::cout << "making code"<< std::endl; // test line
     int index = makeHashCode(item);
 //ERROR: this function CANNOT reach hashTable[index]->itemName
 //scope thing? point thing?
