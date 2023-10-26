@@ -234,7 +234,6 @@ int binarySearch(string items[], string target){
 }
 
 
-
 //Make a hash code: given a string, output an index
 int makeHashCode(string item){
     
@@ -260,33 +259,6 @@ void insert(Node* hashTable[], string item){
     //place this node in front of previous node at hash index
     myNode->next = hashTable[index];
     hashTable[index] = myNode;
-
-    /*
-    //if first item in chain, place in hashtable array
-    if (hashTable[index] == nullptr){
-        std::cout << "null ptr" << std::endl; // test line
-        hashTable[index] = &myNode;
-    }
-    //follow the chain and place at the end
-        //linked list traversal, help from codesdope.com
-//ERROR: when chaining, not placing correctly
-//FIX: include a tail
-    else {
-        Node *temp;                 
-        temp = hashTable[index];
-        //is next spot availible? if not, move to next node
-        std::cout << "\ttest" << std::endl; // test line
-        std::cout << "\t" << temp->itemName << std::endl; // test line
-        while(temp->next != nullptr){
-            std::cout << "\t" << temp->itemName << std::endl; // test line
-            temp = temp->next;
-        }
-        temp->next = &myNode;
-    }
-    //Should be printing out the first in chain:
-    */
-   //std::cout << hashTable[index]->itemName << std::endl; // test line
-    
 }
 
 
@@ -295,28 +267,21 @@ int hashSearch(Node* hashTable[], string item){
     
     //find the hash location
     int index = makeHashCode(item);
-//ERROR: this function CANNOT reach hashTable[index]->itemName
-//scope thing? point thing?
-    //std::cout << hashTable[index] << std::endl; // test line
-    //std::cout << "ERROR: " << std::endl; // test line
-    //std::cout << hashTable[index]->itemName << std::endl; // test line
-    //std::cout << "checking first equal" << std::endl; // test line
+
     if (hashTable[index] == nullptr){
-        //std::cout << "nothing in its index" << std::endl; // test line
         return -1;
     } 
     else if (isEqual(item, hashTable[index]->itemName)){
-        //std::cout << "first IS equal" << std::endl; // test line
         return index;
     }   
+
+    //check the chain
     else {
-        //check the chain
-        //std::cout << "checking chain" << std::endl; // test line
         Node* temp = new Node();                 
         temp = hashTable[index]->next;
+
         //is next spot availible? if not, move to next node
         while (temp != NULL){
-            //std::cout << "checking: " << temp->itemName << std::endl; // test line
             if (isEqual(temp->itemName, item)){
                 return index;
             }
@@ -325,8 +290,9 @@ int hashSearch(Node* hashTable[], string item){
         //not found in chain
         return -1;
     }
-    //std::cout << "done"<< std::endl; // test line
 }
+
+
 
 //Main program!
 //Open file, put into array, pick random 42, search, and print comparisons
@@ -345,8 +311,7 @@ int main () {
 
     //Sort the magic items
     mergeSort(magicItems, _NUM_OF_ITEMS);
-    //std::cout << "Merge Sort Comparisons: " << std::endl; // test line
-    //std::cout << _comparisons  << std::endl; // test line
+
 
 
     //LINEAR SEARCH on sorted array for each of the 42 items
@@ -370,6 +335,7 @@ int main () {
     std::cout << "\nAverage Linear Search Comparisons: "<< avgLinearComparisons << "\n" << std::endl;
 
 
+
     //BINARY SEARCH on sorted array for each of the same 42 items
     int binaryComparisons = 0;
     for (int i = 0; i < _SUB_ITEMS; i++){
@@ -389,7 +355,8 @@ int main () {
     std::cout << "\nAverage Binary Search Comparisons: "<< avgBinaryComparisons << "\n" << std::endl;
 
 
-    //create an empty hash table
+
+    //create an empty HASH TABLE
     Node* magicHash[_HASH_TABLE_SIZE];
     for (int i = 0; i < _HASH_TABLE_SIZE; i++){
         magicHash[i] = nullptr;
@@ -399,9 +366,6 @@ int main () {
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
         insert(magicHash, magicItems[i]);
     }
-    //std::cout << "Finished hash inserts" << std::endl; // test line
-    //std::cout << magicHash[1]->itemName << std::endl; // test line
-
 
     //SEARCH hash table for each of the same 42 items
     int hashComparisons = 0;
@@ -409,20 +373,11 @@ int main () {
         
         _comparisons = 0;
         item = randomItems[i];
-        //std::cout << "\n\nLooking for: " << item << std::endl; // test line
-        //Node* myNode = new Node();
-        //myNode = magicHash[index];
-        //std::cout << "my node gotten!" << std::endl; // test line
-        //std::cout << myNode->itemName << std::endl; // test line
-
-        //std::cout << "presearch"<< std::endl; // test line
         index = hashSearch(magicHash, item);
         hashComparisons += _comparisons;
 
         //print num of comparisons for the item
         std::cout << item << "\n\tComparisons: " << _comparisons << std::endl;
-        //std::cout << "\tIndex: " << index << std::endl; // test line
-
     }
 
     //calculate avg comparisons (get and chaining), round 2 decimal place, print
