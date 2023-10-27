@@ -1,5 +1,5 @@
 // Aidan Carr
-// October 20, 2023
+// October 26, 2023
 // Searching and Hashing
 
 //Compiled using g++
@@ -16,9 +16,9 @@ using namespace std;
 //GLOBAL variables
 const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
+const int _SUB_ITEMS = 42; //CONSTANT number of items for searching
+const int _HASH_TABLE_SIZE = 250; //CONSTANT number of "spots" in hash table
 int _comparisons = 0; //count comparisons for each search method
-int _SUB_ITEMS = 42; //CONSTANT number of items for searching
-int _HASH_TABLE_SIZE = 250; //CONSTANT number of "spots" in hash table
 
 
 
@@ -39,9 +39,6 @@ public:
         itemName = "";
         next = nullptr;
     }
-    //Desctructor 
-    //~Node(){ // test line, might not need this
-    //}
 };
 
 
@@ -67,15 +64,15 @@ void setMagicItemsArray(string items[]){
 
 //Compare 2 strings in alphabetical order
 //return true is first string comes first or they are equal, false if second string is first
-bool isLessThanOrEqual(string first, string second){
+bool isLessThan(string first, string second){
     
     //+1 comparison
-    _comparisons++;
+    //_comparisons++;
 
     //find correct length to avoid out of bound error when comparing
     int length1 = first.length();
     int length2 = second.length();
-    int length = (length1<length2)? length1 : length2;
+    int length = (length1 < length2)? length1 : length2;
 
     //compare letter by letter until an alphabetically 'smaller' string is found (disregard CAPs)
     for (int i = 0; i < length; i++){
@@ -88,8 +85,7 @@ bool isLessThanOrEqual(string first, string second){
     }
 
     //tie goes to the shorter string
-    //if lengths are equal, strings are equal at this point: return true!
-    return (length1<=length2)? true : false;
+    return (length1 <= length2)? true : false;
 }
 
 
@@ -98,9 +94,10 @@ bool isLessThanOrEqual(string first, string second){
 bool isEqual(string first, string second){
     
     //+1 comparison
-    _comparisons++;
+    //_comparisons++;
 
     //find correct length to avoid out of bound error when comparing
+    //different lengths means definetly not equal
     int length1 = first.length();
     int length2 = second.length();
     if (length1 != length2){
@@ -137,7 +134,7 @@ void shuffle(string items[]){
     int randomIndex;
     for (int i = length-1; i > 0; i--){
         randomIndex = rand() % i;
-        swap(items,i,randomIndex);
+        swap(items, i, randomIndex);
     }
 
     //reset comparisons count after each shuffle
@@ -188,7 +185,7 @@ void mergeSort(string items[], int length){
             }
 
             //sort 2 ordered arrays into one larger array
-            else if (isLessThanOrEqual(half1[firstPos],half2[secondPos])){
+            else if (isLessThan(half1[firstPos], half2[secondPos])){
                 items[sortingPos] = half1[firstPos];
                 firstPos ++;
             }
@@ -207,6 +204,7 @@ void mergeSort(string items[], int length){
 //Linear Search, find target in O(n) complexity
 int linearSearch(string items[], string target){
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
+        _comparisons ++;
         if (isEqual(items[i], target)){
             return i;
         }
@@ -218,19 +216,25 @@ int linearSearch(string items[], string target){
 //Binary Search, find target in O(log2n) complexity
     //Psuedocode from CLRS textbook pg 799
 int binarySearch(string items[], string target){
-    int low = 0;
-    int high = _NUM_OF_ITEMS;
+    int low = 0;              //inclusive
+    int high = _NUM_OF_ITEMS; //exclusive
     int mid;
+
     while (low < high){
         mid = floor((low+high)/2);
-        if (isLessThanOrEqual(target, items[mid])){
+        _comparisons ++;
+        if (isEqual(target, items[mid])){
+            return mid;
+        }
+        else if (isLessThan(target, items[mid])){
             high = mid;
         }
         else {
             low = mid + 1;
         }
     }
-    return high;
+
+    return -1;
 }
 
 
@@ -268,6 +272,8 @@ int hashSearch(Node* hashTable[], string item){
     //find the hash location
     int index = makeHashCode(item);
 
+    _comparisons ++;
+
     if (hashTable[index] == nullptr){
         return -1;
     } 
@@ -281,7 +287,8 @@ int hashSearch(Node* hashTable[], string item){
         temp = hashTable[index]->next;
 
         //is next spot availible? if not, move to next node
-        while (temp != NULL){
+        //+1 comparison for every
+        while (_comparisons ++ && temp != NULL){
             if (isEqual(temp->itemName, item)){
                 return index;
             }
@@ -315,6 +322,7 @@ int main () {
 
 
     //LINEAR SEARCH on sorted array for each of the 42 items
+    std::cout << "\nLINEAR SEARCH" << "\n" << std::endl;
     int linearComparisons = 0;
     string item;
     int index;
@@ -330,13 +338,14 @@ int main () {
     }
 
     //calculate avg comparisons, round 2 decimal place, print
-    float avgLinearComparisons = linearComparisons / 42.0;
+    float avgLinearComparisons = (float) linearComparisons / _SUB_ITEMS;
     avgLinearComparisons = (int) ((avgLinearComparisons + 0.005) * 100) / 100.0;
     std::cout << "\nAverage Linear Search Comparisons: "<< avgLinearComparisons << "\n" << std::endl;
 
 
 
     //BINARY SEARCH on sorted array for each of the same 42 items
+    std::cout << "\nBINARY SEARCH" << "\n" << std::endl;
     int binaryComparisons = 0;
     for (int i = 0; i < _SUB_ITEMS; i++){
         
@@ -357,6 +366,7 @@ int main () {
 
 
     //create an empty HASH TABLE
+    std::cout << "\nHASH TABLE" << "\n" << std::endl;
     Node* magicHash[_HASH_TABLE_SIZE];
     for (int i = 0; i < _HASH_TABLE_SIZE; i++){
         magicHash[i] = nullptr;
