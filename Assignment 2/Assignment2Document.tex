@@ -1,0 +1,549 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Assignment 1
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{page \thepage\ of \pageref{LastPage}} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+% make code look nice
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{           
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2                    
+}
+
+\lstset{style=mystyle}
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2023 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	% Top horizontal rule
+   \huge Assignment Two: Searching and Hashing  \\     	    % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	% Bottom horizontal rule
+}
+
+\author{Aidan Carr \\ \normalsize Aidan.Carr1@Marist.edu}
+
+\date{\normalsize October 27, 2023} 	% Today's date.
+
+\begin{document}
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%   start PROBLEM ONE
+%----------------------------------------------------------------------------------------
+\section{Introduction}
+
+\subsection{The Basics of Searching}
+Uh oh! You lost your wallet! It's not going to find itself, or reappear in your hands, you have to look for it. Or, search for it. 
+
+When searching, there are a few main components: the group of things, what you are looking for, and the location for that thing. For example, when looking for a lost wallet, you search your house. You check the kitchen cabinets, in a bedroom dresser, in the bathroom medicine cabinet, and eventually you should find it, maybe under the couch. 
+
+In this assignment, we will be looking for magic items using computer science. Each magic item is stored in a unique, numbered location called an index. We will have a collection, or an array, that stores all 666 of these magic items. Like our locations around the house, each one has the possibility to store the particular magic item (or wallet) that we are looking for.
+
+Using different searching methods, we can see how to store and find our target in a faster, more efficient manner.
+
+\subsection{Assignment Framework}
+Starting off in the main function of our code in Figure~\ref{figure:MainBegin}, we'll set an array called \texttt{magicItems[]} to take all the lines from magicitems.txt on line 3. We will then shuffle the array and pick the first \texttt{\_SUB\_ITEMS} items. In this Assignment the constant \texttt{\_SUB\_ITEMS} will be 42. We will use this subarray of items to test or different search methods.
+
+ To see how \texttt{setMagicItemsArray()}, \texttt{shuffle()}, and \texttt{mergeSort()} work, check out Assignment 1
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=302, lastline=314]{SearchAndHash.cpp}
+    \caption{Setting up our arrays in C++}
+    \label{figure:MainBegin}
+\end{figure}
+
+\pagebreak
+
+\subsection{Comparisons functions}
+In searching, we are constantly comparing values to see if we have reached our target or if we are heading in the right direction. When comparing numbers, we use operators like =, <, and >. When comparing strings, however, we will have to use custom functions. 
+
+Figure~\ref{figure:IsEqual} shows an \texttt{isEqual()} function. Given two strings, we check to see if the lengths are equal. If not, the string can't be equal, so we return false on line 8. Next, on line 12, we check every letter index and compare each character to each other. Once one letter is off, we return false. If the function successfully makes it through each character on both strings, it returns true.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=91, lastline=110]{SearchAndHash.cpp}
+    \caption{Comparing string for equality in C++}
+    \label{figure:IsEqual}
+\end{figure}
+
+
+To see an in-depth look at the \texttt{isLessThan()} function, check out Assignment 1.
+
+
+\section{Linear Search}
+
+\subsection{Understanding Linear Search}
+Linear search is the most basic version of searching. Given an array of magic items, we will go one by one down the line of items and check if the item in that location is equal to our target item. If not, move on to the next item. If we reach the end of the array and the item has not been found, the location is -1.
+
+In Figure~\ref{figure:LinearDiagram}, when searching for 39, we check element number 0. 39 does not equal 13 so we move on to element 1. 39 does not equal 9, and we move on. Eventually, at element 4, we find that 39 does equal 39.
+
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=15cm]{LinearDiagram.png}
+    \caption{Example of a Linear Search of numbers\footnotemark}
+    \label{figure:LinearDiagram}
+    
+\end{figure}
+\footnotetext{Image: https://staragile.com/blog/linear-search.}
+
+\subsection{Coding Linear Search}
+Let's look at the code for linearly searching an array of items in Figure~\ref{figure:LinearSearch}.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=199, lastline=209]{SearchAndHash.cpp}
+    \caption{Linear Search in C++}
+    \label{figure:LinearSearch}
+\end{figure}
+
+On line 2 we are looping through every element of the given array. And then, on line 4 and 5, we return the index if we have found an exact string match. If we loop through the entire array without any luck we return -1 on line 8, signifying there was no index associated with our target. Easy!
+
+
+\pagebreak
+
+
+\subsection{Testing Linear Search}
+Going back to the main function, we'll use our subset of magic items and search for each one in the array of 666 items.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=319, lastline=337]{SearchAndHash.cpp}
+    \caption{Linear Search Test in C++}
+    \label{figure:LinearTest}
+\end{figure}
+
+In Figure~\ref{figure:LinearTest}, we first loop through every item in the sub array of 42 items on line 5. We reset the comparisons to 0, and using linear search, we find the index of our first sub item \texttt{randomItems[1]} on line 9. We'll add it to the total number of comparisons for linear search, then repeat for the other 41 items. After all is complete, the code will print the average number of linear search comparisons for 42 items on lines 17 through 19.
+
+Knowing this search in linear search, We should expect the function to have a complexity of: 
+\[O(n)\] To explain why, look at line 7 of Figure~\ref{figure:LinearSearch}. Here, we counting a comparison for every loop of size n on line 5. We only loop through once so we get O(n). Let's see what an example output would look like in Figure~\ref{figure:LinearResults}
+
+\begin{figure}[t] 
+    \centering 
+    \renewcommand{\arraystretch}{1}
+    \begin{tabular}{||lc||lc||} 
+     \hline
+    
+    Item & Comparisons & Item & Comparisons\\
+     \hline
+Cloak of resistance +5 & 144&Orb of storms & 406\\
+Boots of elvenkind & 77&Sceptre of Illusions & 506\\
+Ring of Defense & 456&War Hammer +3/+2 & 647\\
+Large Shield & 341&Wizards Wardrobe & 663\\
+Robe of bones & 477&Vampire Cone & 635\\
+Dream Weaver & 188&Attenuation field & 37\\
+
+Strand of prayer beads, greater & 564&Long Staff & 348\\
+
+Sack of Plunder & 497&Manual of bodily health +3 & 362\\
+
+Seeds of Plenty & 510&Tower Shield & 621\\
+
+War Drum & 645&Cap & 112\\
+
+Arrow of Wormwood & 32&Boots of Running & 78\\
+ 
+Eversmoking bottle & 212&Malhrek's Staff of Flame & 354\\
+ 
+Horseshoes of Water-Striding & 317&Short Bow & 523\\
+ 
+Manual of quickness of action +5 & 374&Razor Leaf & 448\\
+ 
+Boat, folding & 67&snowghost & 540\\
+ 
+Tome of understanding +1 & 611&Stone of alarm & 560\\
+ 
+Staff of Divine Winds & 552&Dust of tracelessness & 196\\
+ 
+Club & 148&Dimensional shackles    28,000 gp & 177\\
+ 
+Manual of quickness of action +1 & 370&Short Battle Bow & 522\\
+ 
+Elixir of hiding & 203&Ranger's Sword & 447\\
+ 
+Banded mail of grounding & 48&Mongoose Ring & 387\\
+ 
+
+
+     \hline
+    \end{tabular}
+    \caption{The 42 items found with Linear Search and their comparisons}
+    \label{figure:LinearResults}
+\end{figure}
+
+\pagebreak
+
+With 42 items, our average number of comparisons comes to 366.71. 
+
+This number comes from O(666). If there are 666 items, every search has an expected amount of comparisons to be 666/2 or around 333. Our number is close to this expected value which means we are right on the money!
+
+
+\section{Binary Search}
+\subsection{Understanding Binary Search}
+Binary search is a slightly more complicated version of searching, but it is much much quicker. Think about how we can efficiently find a word in a dictionary like one in Figure~\ref{figure:Dictionary}. You start by opening to the middle page. If your word comes later, you open to the middle of the top half. You constantly divide your range in half until, eventually, the word is found.
+
+\pagebreak
+
+\begin{figure}[ht] 
+    \centering 
+    \includegraphics[width=10cm]{dictionary.png}
+    \caption{A dictionary... duh\footnotemark}
+    \label{figure:Dictionary}
+    
+\end{figure}
+\footnotetext{Image: https://www.britannica.com/summary/dictionary}
+
+
+\subsection{Coding Binary Search}
+Let's look at the code for using binary search to find a magic item in an array in Figure~\ref{figure:BinarySearch}.
+
+On line 2 and 3 we set the low and high indexes. This is the range of where we will be looking; to start the range is the whole array. We create a middle value \texttt{mid} and check to see the range works on line 6. We loop until either finding the target or shrink to range too far.
+
+We calculate the middle index on line 7 and count a comparison. If the element at \texttt{mid} equals our target, we can return our position. If our target falls earlier on line 12, we make the new range only cover the former half of the array. If our target falls after this \texttt{mid} element on line 15, we make the new range the latter half of the array. Then, we search again.
+
+If we have searched and not found it, we jump out of the while loop and return -1 at line 20.
+
+\pagebreak
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=212, lastline=232]{SearchAndHash.cpp}
+    \caption{Binary Search in C++}
+    \label{figure:BinarySearch}
+\end{figure}
+
+
+\subsection{Testing Binary Search}
+Going back to the main function again, we will use binary search to look for each item of our subset in the total 666 magic items.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=342, lastline=358]{SearchAndHash.cpp}
+    \caption{Binary Search Test in C++}
+    \label{figure:BinaryTest}
+\end{figure}
+
+In Figure~\ref{figure:BinaryTest}, we first loop through every item in the sub array of 42 items on line 3. We reset the comparisons to 0, and using binary search, we find the index of our first sub item \texttt{randomItems[1]} on line 7. We'll add it to the total number of comparisons for binary search, then repeat for the other 41 items. After all is complete, the code will print the average number of binary search comparisons for 42 items on lines 15 through 17.
+
+This binary search function will have a complexity of: 
+\[O(log(n))\] To explain why, look at line 7 of Figure~\ref{figure:BinarySearch}. Here, we are dividing the range in half every time. This \texttt{mid} value will eventually be used for a new beginning or end of the range. We loop through until we have divided the array in half and get to size 0.
+
+An example output of binary search comparisons can be seen in Figure~\ref{figure:BinaryResults}
+
+
+\begin{figure}[h] 
+    \centering 
+    \renewcommand{\arraystretch}{1}
+    \begin{tabular}{||lc||lc||} 
+     \hline
+    
+    Item & Comparisons & Item & Comparisons\\
+     \hline
+Cloak of resistance +5 & 9&Orb of storms & 8\\
+ 
+Boots of elvenkind & 8&Sceptre of Illusions & 9\\
+ 
+Ring of Defense & 10&War Hammer +3/+2 & 5\\
+ 
+Large Shield & 10&Wizards Wardrobe & 10\\
+ 
+Robe of bones & 10&Vampire Cone & 8\\
+ 
+Dream Weaver & 5&Attenuation field & 7\\
+ 
+Strand of prayer beads, greater & 5&Long Staff & 8\\
+ 
+Sack of Plunder & 10&Manual of bodily health +3 & 10\\
+ 
+Seeds of Plenty & 8&Tower Shield & 7\\
+ 
+War Drum & 8&Cap & 10\\
+ 
+Arrow of Wormwood & 6&Boots of Running & 9\\
+ 
+Eversmoking bottle & 8&Malhrek's Staff of Flame & 9\\
+ 
+Horseshoes of Water-Striding & 8&Short Bow & 10\\
+ 
+Manual of quickness of action +5 & 8&Razor Leaf & 8\\
+ 
+Boat, folding & 10&snowghost & 9\\
+ 
+Tome of understanding +1 & 7&Stone of alarm & 10\\
+ 
+Staff of Divine Winds & 8&Dust of tracelessness & 9\\
+ 
+Club & 10&Dimensional shackles    28,000 gp & 9\\
+ 
+Manual of quickness of action +1 & 9&Short Battle Bow & 5\\
+ 
+Elixir of hiding & 9&Ranger's Sword & 9\\
+ 
+Banded mail of grounding & 7&Mongoose Ring & 6\\
+ 
+
+
+
+     \hline
+    \end{tabular}
+    \caption{The 42 items found with Binary Search and their comparisons}
+    \label{figure:BinaryResults}
+\end{figure}
+
+
+With 42 items, our average number of comparisons comes to 8.29. 
+
+This number comes from O(log(666)). If there are 666 items, every search has an expected amount of comparisons to be log(666) or around 9.38. Our number is close and even a bit less than this expected value because sometimes the search function finds our target before reaching a range of 1. Cool beans!
+
+
+\pagebreak
+
+\section{Hashing}
+\subsection{Understanding Hashing}
+Hashing is one way to store variables into a large array. Look at Figure~\ref{figure:HashDiagram} to see how names are stored in a hash map. We start with a given value, like "James" and hash it. Hashing can be done in a number of ways, but it somehow converts a string to a number. We can count the number of letters, or in this assignment, add up the ASCII values of each character in the string. 
+
+One thing to note is that the hashing function must produce a number that will fit within our array. This green storage array has indexes 00 through 06, so the hash function must produce a number in this range.
+
+\begin{figure}[ht] 
+    \centering 
+    \includegraphics[width=10cm]{HashDiagram.png}
+    \caption{Storing names in a Hash Map\footnotemark}
+    \label{figure:HashDiagram}
+    
+\end{figure}
+\footnotetext{Image: https://khalilstemmler.com/blogs/data-structures-algorithms/hash-tables/}
+
+A problem occurs when more than one string gets mapped to the same location. We do not want to override our data, so we have to store the value in what is called a chain. 
+
+\begin{figure}[ht] 
+    \centering 
+    \includegraphics[width=10cm]{ChainDiagram.png}
+    \caption{Hash Map with chaining\footnotemark}
+    \label{figure:ChainDiagram}
+    
+\end{figure}
+\footnotetext{Image: https://jasonlue.github.io/algo/2019/08/27/clustered-hashing-basic-operations.html}
+
+
+
+
+Figure~\ref{figure:ChainDiagram} on the previous page shows what our hash array looks like with chaining. We use nodes and linked lists (see Assignment 1) to store every one of our values.
+
+
+\subsection{Coding with Hash Tables}
+The first step in hashing is have a function that can turn a string into a number. Figure~\ref{figure:MakeHashCode} takes in a string and does just that. We go letter by letter on line 5, and increase \texttt{asciiTotal} by however much each character value is in ASCII. We then return this total, modulus \texttt{\_HASH\_TABLE\_SIZE}, so it can stay within our range of hash array locations. For this assignment, the hash table size is 250. Because this is smaller than 666, we must prepare for chaining.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=236, lastline=244]{SearchAndHash.cpp}
+    \caption{Make Hash Code given a string in C++}
+    \label{figure:MakeHashCode}
+\end{figure}
+
+Figure~\ref{figure:Insert} shows how a given string is put into a hash array. We first get the index by putting our string into \texttt{makeHashCode()} on line 4. With this information, we create a Node with the name of the string on lines 7 and 8. To put it into our hash table, we just make this Node's next value what used to be the first array in that index, then make this node that first pointer. We are adding to the front of the chain.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=248, lastline=260]{SearchAndHash.cpp}
+    \caption{Insert string into Hash Array in C++}
+    \label{figure:Insert}
+\end{figure}
+
+\pagebreak
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=264, lastline=294]{SearchAndHash.cpp}
+    \caption{Hash Search in C++}
+    \label{figure:HashSearch}
+\end{figure}
+
+Above, in Figure~\ref{figure:HashSearch}, our goal is to find the location of the given string. Right away, we find the hash code on line 4. First, we check if the hash code index has a Node pointer in it. If it does not, return -1. If there is something there, we check this node on line 11. If this first node in the chain is our target, return the index. If not, move on down throughout the chain starting at line 16.
+
+Here, we create a temporary Node pointer \texttt{temp}. We check to see if there is a second node in the chain on line 22. If there is, we compare the names, return index if we found our target. If it is not found, we move to the next node in the chain on line 26. We repeat until we have reached the end of the chain. If the target hasn't been found, return -1 on line 29.
+
+Notice that our comparisons come on line 6, to count the initial target check on line 11. Then, we count on every while loop on line 22. This counter will take, on average, the length of the chain. Remember this idea when thinking about complexity in the next section.
+
+\pagebreak
+
+Back to the main function in Figure~\ref{figure:Populate}, a Hash Array of node pointer is created. We initialize each element as a null pointer on lines 3 and 4. Then, on lines 8 and 9, we add all 666 items into the hash array.
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=363, lastline=372]{SearchAndHash.cpp}
+    \caption{Populating the Hash Array in C++}
+    \label{figure:Populate}
+\end{figure}
+
+
+
+\subsection{Testing Hash Tables}
+
+Time to test it out! Let's go through each item in of sub array of 42 items on line 2 in Figure~\ref{figure:HashTest}. We will hash search for the index on line 6 and add up the comparisons. Repeating this 42 times, we will get our average number of comparisons for our special magic items.
+
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=375, lastline=390]{SearchAndHash.cpp}
+    \caption{Hashing Test in C++}
+    \label{figure:HashTest}
+\end{figure}
+
+
+\pagebreak
+
+Figure~\ref{figure:HashResults} below shows the number of comparisons for each magic item in our sub array. Notice how these numbers are much smaller compared to the other search methods. While some items required five or six comparisons, many only require one or two! 
+
+\begin{figure} [h]
+    \centering 
+    \renewcommand{\arraystretch}{1}
+    \begin{tabular}{||lc||lc||} 
+     \hline
+    
+    Item & Comparisons & Item & Comparisons\\
+     \hline
+    Cloak of resistance +5 & 3&Orb of storms & 2\\
+     
+    Boots of elvenkind & 3&Sceptre of Illusions & 1\\
+     
+    Ring of Defense & 1&War Hammer +3/+2 & 1\\
+     
+    Large Shield & 2&Wizards Wardrobe & 1\\
+     
+    Robe of bones & 2&Vampire Cone & 1\\
+     
+    Dream Weaver & 4&Attenuation field & 5\\
+     
+    Strand of prayer beads, greater & 2&Long Staff & 3\\
+     
+    Sack of Plunder & 3&Manual of bodily health +3 & 1\\
+     
+    Seeds of Plenty & 1&Tower Shield & 1\\
+     
+    War Drum & 1&Cap & 3\\
+     
+    Arrow of Wormwood & 6&Boots of Running & 2\\
+     
+    Eversmoking bottle & 3&Malhrek's Staff of Flame & 2\\
+     
+    Horseshoes of Water-Striding & 1&Short Bow & 2\\
+     
+    Manual of quickness of action +5 & 1&Razor Leaf & 1\\
+     
+    Boat, folding & 2&snowghost & 1\\
+     
+    Tome of understanding +1 & 1&Stone of alarm & 1\\
+     
+    Staff of Divine Winds & 1&Dust of tracelessness & 3\\
+     
+    Club & 5&Dimensional shackles    28,000 gp & 5\\
+     
+    Manual of quickness of action +1 & 2&Short Battle Bow & 2\\
+     
+    Elixir of hiding & 3&Ranger's Sword & 2\\
+     
+    Banded mail of grounding & 6&Mongoose Ring & 1\\
+     \hline
+
+    \end{tabular}
+    \caption{The 42 items found with Hash Search and their comparisons}
+    \label{figure:HashResults}
+\end{figure}
+
+With this data, we get an average number of comparisons to be 2.24 per item. 
+
+Recall Figure~\ref{figure:HashSearch} where every look up included a search, and a look through the chain length. This complexity can be calculated by adding these two numbers together. 
+
+The average chain length, also known as the load factor, can be determined by taking the total number of items and divided it by the number of spots available in the hash table:
+\[Load Factor = \alpha = \frac{n}{size}\] 
+
+And this number gives us the complexity of a hash search:
+\[O(1+\alpha)\]
+
+
+
+
+
+\end{document}

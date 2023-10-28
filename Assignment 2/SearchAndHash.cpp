@@ -65,9 +65,6 @@ void setMagicItemsArray(string items[]){
 //Compare 2 strings in alphabetical order
 //return true is first string comes first or they are equal, false if second string is first
 bool isLessThan(string first, string second){
-    
-    //+1 comparison
-    //_comparisons++;
 
     //find correct length to avoid out of bound error when comparing
     int length1 = first.length();
@@ -92,9 +89,6 @@ bool isLessThan(string first, string second){
 //Compare 2 strings in alphabetical order
 //return true is first string comes first, false if second string is first
 bool isEqual(string first, string second){
-    
-    //+1 comparison
-    //_comparisons++;
 
     //find correct length to avoid out of bound error when comparing
     //different lengths means definetly not equal
