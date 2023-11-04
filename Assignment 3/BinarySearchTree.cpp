@@ -14,7 +14,7 @@ using namespace std;
 
 
 //GLOBAL variables
-const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
+const int _NUM_OF_ITEMS = 26; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
 
 
@@ -102,7 +102,7 @@ bool isLessThan(string first, string second){
 
 
 //insert a string into the BST
-void insert(BinarySearchTree tree, string name){
+void insert(BinarySearchTree *tree, string name){
     
     //create a new node
     Node* myNode = new Node();
@@ -110,7 +110,7 @@ void insert(BinarySearchTree tree, string name){
 
     //these might not work: new node, pointers...
     Node* trailing = nullptr;
-    Node* current = tree.root;
+    Node* current = tree->root;
 
     //find a spot for the new Node
     while (current != nullptr){
@@ -129,7 +129,7 @@ void insert(BinarySearchTree tree, string name){
     //put the new Node in the spot
     myNode->parent = trailing;
     if (trailing == nullptr){
-        tree.root = myNode;
+        tree->root = myNode;
     }
     else if (isLessThan(name, trailing->itemName)){
         trailing->left = myNode;
@@ -152,7 +152,8 @@ int main () {
     BinarySearchTree magicBST;
 
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
-        insert(magicBST, magicItems[i]);
+        std::cout << magicItems[i] << std::endl;
+        insert(&magicBST, magicItems[i]);
     }
 
 }
