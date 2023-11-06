@@ -14,7 +14,7 @@ using namespace std;
 
 
 //GLOBAL variables
-const int _NUM_OF_ITEMS = 26; //CONSTANT number of magic items
+const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
 const int _NUM_OF_SUB_ITEMS = 42; //CONSTANT number of items for searching
 const string _SUB_FILE_NAME = "magicitems-find-in-bst.txt";
@@ -168,19 +168,32 @@ void insert(BinarySearchTree *tree, string name){
 
 //search a BST for a given string
 void search(Node *node, string target){
-    if(node == nullptr || isEqual(node->itemName, target)){
-
+    if (node == nullptr || isEqual(node->itemName, target)){
+        //return node;
+        std::cout << std::endl;
+    }
+    else if (isLessThan(target, node->itemName)){
+        std::cout << "L";
+        //return
+        search(node->left, target);
+    }
+    else {
+        std::cout << "R";
+        //return
+        search(node->right, target);
     }
 }
 
 
 //Main program!
-//Open file, put into array, pick random 42, search, and print comparisons
+//get magic items array, put in BST, search for 42 specific items, print comparisons
 int main () {
 
     //put 666 magic items into magicItems array
     string magicItems[_NUM_OF_ITEMS];
     setItemsArray(magicItems, _FILE_NAME, _NUM_OF_ITEMS);
+    std::cout << "INSERT Paths\n" << std::endl;
+
 
     //create a Binary Search Tree
     BinarySearchTree magicBST;
@@ -192,13 +205,14 @@ int main () {
     }
 
 
-    //put 666 magic items into magicItems array
+    //put 42 specific magic items into subMagicItems array
     string subMagicItems[_NUM_OF_SUB_ITEMS];
     setItemsArray(subMagicItems, _SUB_FILE_NAME, _NUM_OF_SUB_ITEMS);
+    std::cout << "\nSEARCH Paths\n" << std::endl;
 
     //Search for select items within BST
     for (int i = 0; i < _NUM_OF_SUB_ITEMS; i++){
-        //std::cout << subMagicItems[i] << std::endl; //test line
+        std::cout << subMagicItems[i] << std::endl; //test line
         search(magicBST.root, subMagicItems[i]);
     }
 
