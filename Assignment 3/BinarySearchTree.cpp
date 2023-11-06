@@ -16,6 +16,9 @@ using namespace std;
 //GLOBAL variables
 const int _NUM_OF_ITEMS = 26; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
+const int _NUM_OF_SUB_ITEMS = 42; //CONSTANT number of items for searching
+const string _SUB_FILE_NAME = "magicitems-find-in-bst.txt";
+
 
 
 //Node class of BST, 2 children, 1 parent
@@ -57,21 +60,22 @@ public:
 
 //populate magicItems[] with the item names from the txt file
     //from Assignment 2
-void setMagicItemsArray(string items[]){ 
+void setItemsArray(string items[], string file, int length){ 
     //Open the file
     ifstream itemsFile;
-    itemsFile.open(_FILE_NAME);
+    itemsFile.open(file);
 
     string currentLine;
     if (itemsFile.is_open()){
 
         //assign each line to an element in the array
-        for (int i = 0; i < _NUM_OF_ITEMS; i++){
+        for (int i = 0; i < length; i++){
             std::getline(itemsFile, currentLine);
             items[i] = currentLine;
         }
     }
     else {}
+    itemsFile.close();
 }
 
 
@@ -105,10 +109,9 @@ bool isLessThan(string first, string second){
 void insert(BinarySearchTree *tree, string name){
     
     //create a new node
-    Node* myNode = new Node();
-    myNode->itemName = name;
+    Node* newNode = new Node();
+    newNode->itemName = name;
 
-    //these might not work: new node, pointers...
     Node* trailing = nullptr;
     Node* current = tree->root;
 
@@ -127,15 +130,15 @@ void insert(BinarySearchTree *tree, string name){
     std::cout << endl;
 
     //put the new Node in the spot
-    myNode->parent = trailing;
+    newNode->parent = trailing;
     if (trailing == nullptr){
-        tree->root = myNode;
+        tree->root = newNode;
     }
     else if (isLessThan(name, trailing->itemName)){
-        trailing->left = myNode;
+        trailing->left = newNode;
     }
     else {
-        trailing->right = myNode;
+        trailing->right = newNode;
     }
 }
 
@@ -146,14 +149,26 @@ int main () {
 
     //put 666 magic items into magicItems array
     string magicItems[_NUM_OF_ITEMS];
-    setMagicItemsArray(magicItems);
+    setItemsArray(magicItems, _FILE_NAME, _NUM_OF_ITEMS);
 
     //create a Binary Search Tree
     BinarySearchTree magicBST;
 
+    //insert all magic items into BST
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
         std::cout << magicItems[i] << std::endl;
         insert(&magicBST, magicItems[i]);
     }
+
+
+    //put 666 magic items into magicItems array
+    string subMagicItems[_NUM_OF_SUB_ITEMS];
+    setItemsArray(subMagicItems, _SUB_FILE_NAME, _NUM_OF_SUB_ITEMS);
+
+    //Search for select items within BST
+    for (int i = 0; i < _NUM_OF_SUB_ITEMS; i++){
+        std::cout << subMagicItems[i] << std::endl;
+    }
+
 
 }
