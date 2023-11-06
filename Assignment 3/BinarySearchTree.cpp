@@ -104,6 +104,29 @@ bool isLessThan(string first, string second){
 }
 
 
+//Compare 2 strings in alphabetical order
+bool isEqual(string first, string second){
+
+    //find correct length to avoid out of bound error when comparing
+    //different lengths means definetly not equal
+    int length1 = first.length();
+    int length2 = second.length();
+    if (length1 != length2){
+        return false;
+    }
+
+    //compare letter by letter until an unequal character string is found
+    for (int i = 0; i < length1; i++){
+        if (first.at(i) != second.at(i)){
+            return false;
+        }
+    }
+
+    //if the two words have passed its equal
+    return true;
+}
+
+
 
 //insert a string into the BST
 void insert(BinarySearchTree *tree, string name){
@@ -143,6 +166,14 @@ void insert(BinarySearchTree *tree, string name){
 }
 
 
+//search a BST for a given string
+void search(Node *node, string target){
+    if(node == nullptr || isEqual(node->itemName, target)){
+
+    }
+}
+
+
 //Main program!
 //Open file, put into array, pick random 42, search, and print comparisons
 int main () {
@@ -167,7 +198,8 @@ int main () {
 
     //Search for select items within BST
     for (int i = 0; i < _NUM_OF_SUB_ITEMS; i++){
-        std::cout << subMagicItems[i] << std::endl;
+        //std::cout << subMagicItems[i] << std::endl; //test line
+        search(magicBST.root, subMagicItems[i]);
     }
 
 
