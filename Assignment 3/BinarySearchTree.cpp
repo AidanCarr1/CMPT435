@@ -18,6 +18,7 @@ const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
 const string _FILE_NAME = "magicitems.txt";
 const int _NUM_OF_SUB_ITEMS = 42; //CONSTANT number of items for searching
 const string _SUB_FILE_NAME = "magicitems-find-in-bst.txt";
+int _comparisons = 0; //count search comparisons
 
 
 
@@ -168,15 +169,23 @@ void insert(BinarySearchTree *tree, string name){
 
 //search a BST for a given string
 void search(Node *node, string target){
+
+    //+1 comparison
+    _comparisons ++;
+
+    // = found the node, base case of recursion
     if (node == nullptr || isEqual(node->itemName, target)){
         //return node;
         std::cout << std::endl;
     }
+
+    // < go to the left
     else if (isLessThan(target, node->itemName)){
         std::cout << "L";
         //return
         search(node->left, target);
     }
+    // >= go to the right
     else {
         std::cout << "R";
         //return
@@ -185,7 +194,7 @@ void search(Node *node, string target){
 }
 
 
-//Main program!
+//Main Program!
 //get magic items array, put in BST, search for 42 specific items, print comparisons
 int main () {
 
@@ -202,6 +211,7 @@ int main () {
     for (int i = 0; i < _NUM_OF_ITEMS; i++){
         std::cout << magicItems[i] << std::endl;
         insert(&magicBST, magicItems[i]);
+        std::cout << std::endl;
     }
 
 
@@ -210,11 +220,24 @@ int main () {
     setItemsArray(subMagicItems, _SUB_FILE_NAME, _NUM_OF_SUB_ITEMS);
     std::cout << "\nSEARCH Paths\n" << std::endl;
 
+    int totalComparisons = 0;
+
     //Search for select items within BST
     for (int i = 0; i < _NUM_OF_SUB_ITEMS; i++){
+        
+        //Reset comparsion count
+        _comparisons = 0;
+
         std::cout << subMagicItems[i] << std::endl; //test line
         search(magicBST.root, subMagicItems[i]);
+        std::cout << _comparisons << " comparisons\n" << std::endl; //test line
+
+        totalComparisons += _comparisons;
     }
 
+    //calculate avg comparisons (get and chaining), round 2 decimal place, print
+    float avgComparisons = (float) totalComparisons / _NUM_OF_SUB_ITEMS;
+    avgComparisons = (int) ((avgComparisons + 0.005) * 100) / 100.0;
+    std::cout << "\nAverage Comparisons: "<< avgComparisons << "\n" << std::endl;
 
 }
