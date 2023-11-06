@@ -1,5 +1,5 @@
 // Aidan Carr
-// November 2, 2023
+// November 6, 2023
 // Binary Search Tree
 
 //Compiled using g++
@@ -8,7 +8,6 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include <time.h>
 #include <cmath>
 using namespace std;
 
@@ -213,6 +212,9 @@ int main () {
         insert(&magicBST, magicItems[i]);
         std::cout << std::endl;
     }
+
+
+    //PRINT AN IN ORDER TRAVERSAL
 
 
     //put 42 specific magic items into subMagicItems array

@@ -1,5 +1,5 @@
 // Aidan Carr
-// November 2, 2023
+// November 6, 2023
 // Undirected Graphs
 
 //Compiled using g++
@@ -8,11 +8,30 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include <time.h>
 #include <cmath>
+#include <vector>
 using namespace std;
 
 
 //GLOBAL variables
-const int _NUM_OF_ITEMS = 666; //CONSTANT number of magic items
-const string _FILE_NAME = "magicitems.txt";
+const string _FILE_NAME = "graphs1.txt";
+
+
+
+//Node class of BST, 2 children, 1 parent
+class Vertex {
+
+public:
+    int id;
+    vector<Vertex*> neighbors; //array of neightbors
+
+    //Constructor
+    Vertex(int idInput){
+        id = idInput;
+    }
+
+    //add a vertex neighbor
+    void addNeighbor(Vertex* newNeighbor){
+        neighbors.push_back(newNeighbor);
+    }
+};
