@@ -15,6 +15,7 @@ using namespace std;
 
 //GLOBAL variables
 const string _FILE_NAME = "graphs1.txt";
+const int _LINES_IN_FILE = 375; //number of lines in graphs1.txt
 
 
 

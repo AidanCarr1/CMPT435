@@ -58,9 +58,10 @@ public:
     }
 };
 
+
 //populate magicItems[] with the item names from the txt file
-    //from Assignment 2
 void setItemsArray(string items[], string file, int length){ 
+    
     //Open the file
     ifstream itemsFile;
     itemsFile.open(file);
@@ -166,6 +167,22 @@ void insert(BinarySearchTree *tree, string name){
 }
 
 
+//print a BST in order smallest to largest, recursively
+void inOrderTraversal(Node* node){
+
+    //base case
+    if (node == nullptr){
+        return;
+    }
+
+    //print all of lefft of node, node, all of right
+    inOrderTraversal(node->left);
+    std::cout << node->itemName << std::endl;
+    inOrderTraversal(node->right);
+
+}
+
+
 //search a BST for a given string
 void search(Node *node, string target){
 
@@ -193,8 +210,9 @@ void search(Node *node, string target){
 }
 
 
+
 //Main Program!
-//get magic items array, put in BST, search for 42 specific items, print comparisons
+//put magic items in array and BST, print in order, search for 42 specific items, print comparisons
 int main () {
 
     //put 666 magic items into magicItems array
@@ -203,7 +221,7 @@ int main () {
     std::cout << "INSERT Paths\n" << std::endl;
 
 
-    //create a Binary Search Tree
+    //create a Binary Search Tree (BST)
     BinarySearchTree magicBST;
 
     //insert all magic items into BST
@@ -213,18 +231,19 @@ int main () {
         std::cout << std::endl;
     }
 
-
-    //PRINT AN IN ORDER TRAVERSAL
+    //print an in-order traversal
+    std::cout << "IN-ORDER TRAVERSAL\n" << std::endl;
+    inOrderTraversal(magicBST.root);
 
 
     //put 42 specific magic items into subMagicItems array
     string subMagicItems[_NUM_OF_SUB_ITEMS];
     setItemsArray(subMagicItems, _SUB_FILE_NAME, _NUM_OF_SUB_ITEMS);
-    std::cout << "\nSEARCH Paths\n" << std::endl;
+    std::cout << "\nSEARCH Paths and Comparisons\n" << std::endl;
 
-    int totalComparisons = 0;
 
     //Search for select items within BST
+    int totalComparisons = 0;
     for (int i = 0; i < _NUM_OF_SUB_ITEMS; i++){
         
         //Reset comparsion count
@@ -237,9 +256,8 @@ int main () {
         totalComparisons += _comparisons;
     }
 
-    //calculate avg comparisons (get and chaining), round 2 decimal place, print
+    //calculate avg comparisons, print
     float avgComparisons = (float) totalComparisons / _NUM_OF_SUB_ITEMS;
     avgComparisons = (int) ((avgComparisons + 0.005) * 100) / 100.0;
     std::cout << "\nAverage Comparisons: "<< avgComparisons << "\n" << std::endl;
-
 }
