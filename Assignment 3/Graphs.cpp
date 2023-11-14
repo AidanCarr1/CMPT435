@@ -42,6 +42,7 @@ bool isEqual(string first, string second){
 }
 
 
+
 //Vertex class
 class Vertex {
 
@@ -63,16 +64,17 @@ public:
 };
 
 
+
 class Graph {
 
 public:
     vector<Vertex*> vertices;
     
-    //Constructor
+    //constructor
     Graph(){
     }    
 
-    //Methods:
+    //METHODS:
     //return int location of Vertex in Graph given string id
     int findVertexById(string target){
         
@@ -91,7 +93,7 @@ public:
         return vertices.empty();
     }
 
-    //add vertex
+    //add Vertex
     void addVertex(string id){
         Vertex* myVertex = new Vertex(id);
         //add new Vertex to the list
@@ -106,7 +108,7 @@ public:
     }
 
 
-    //print/display methods:
+    //PRINT/DISPLAY methods:
     //matrix
     void printAsMatrix(){
         int size = vertices.size();
@@ -185,14 +187,42 @@ public:
             std::cout << ">\n" << std::endl;
         }
     }
+
+    //TRAVERSAL METHODS:
+    
+    //dft
+    void depthFirstTraversal(Vertex* fromVertex){
+        if (! fromVertex->isProcessed){
+            std::cout << fromVertex->id;
+            fromVertex->isProcessed = true;
+        }
+        for (int i = 0; i < fromVertex->neighbors.size(); i++){
+            if (! fromVertex->neighbors[i]->isProcessed){
+                depthFirstTraversal(fromVertex->neighbors[i]);
+            }
+        }
+    }
+
+    //unprocess all
+    void unprocessAll(){
+        for (int i = 0; i < vertices.size(); i++){
+            vertices[i]->isProcessed = false;
+        }
+    }
+
+    //bft
+    void breadthFirstTraversal(Vertex* fromVertex){
+        //BOOKMARK
+    }
 };
 
 
+
 //Main Program!
-//Read graphs file and interpret: make graphs, vertices, edges
+//Read graphs file and interpret: make Graphs, Vertices, edges
 int main() {
 
-    //create graph
+    //create Graph
     Graph myGraph = Graph();
 
     //Open the file
@@ -220,28 +250,37 @@ int main() {
                 //std::cout << "comment" << endl; //test line
             }
 
-            //new graph
+            //new Graph
             else if (currentLine.compare(0,3,"new") == 0){
-                //std::cout << "NEW graph" << endl;               
+                //std::cout << "NEW Graph" << endl;               
                 
-                //if there is a previous graph, process it
+                //if there is a previous Graph, process it
                 if (! myGraph.isEmpty()){
                     
-                    //process graph
+                    //process Graph
                     myGraph.printAsMatrix();
                     myGraph.printAsAdjacencyList();
                     myGraph.printAsLinkedObjects();
 
-                    //delete graph
+                    std::cout << "DEPTH-FIRST TRAVERSAL" << std::endl;
+                    myGraph.depthFirstTraversal(myGraph.vertices[0]);
+                    std::cout << "\n" <<std::endl;
+                    myGraph.unprocessAll();
+
+                    std::cout << "BREADTH-FIRST TRAVERSAL" << std::endl;
+                    myGraph.breadthFirstTraversal(myGraph.vertices[0]);
+                    std::cout << "\n" <<std::endl;
+                    
+                    //delete Graph
                 }
             }
 
-            //new vertex
+            //new Vertex
             else if (currentLine.compare(4,6,"vertex") == 0){
                 string id = currentLine.substr(11, 11-strLength);
                 //std::cout << id << std::endl; //test line
                
-                //add vertex to graph by id
+                //add Vertex to Graph by id
                 myGraph.addVertex(id);
 
             }
@@ -268,12 +307,11 @@ int main() {
             }
 
             else {
-                std::cout << "ERROR!\n";
-                std::cout << currentLine << "\n" << std::endl;
+                std::cout << "ERROR: '" << currentLine << "'" << std::endl;
             }
         }
-        //print the final graph
-        //
+        //process the final Graph
+        //add all here, or make a funtions
     }
     else {}
     graphsFile.close();

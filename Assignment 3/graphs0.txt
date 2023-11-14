@@ -19,5 +19,5 @@ add edge 5 - 6
 add edge 5 - 7
 add edge 6 - 7
 
--- print graph
+--for printing purposes
 new graph
