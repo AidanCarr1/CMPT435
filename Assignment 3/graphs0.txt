@@ -4,7 +4,8 @@ new graph
 add vertex 1
 add vertex 2
 add vertex 10
-add vertex 11
+add vertex 111
 add edge 1 - 2
 add edge 2 - 10
-add edge 11 - 1
+add edge 10 - 111
+add edge 111 - 1
