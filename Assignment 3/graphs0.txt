@@ -19,17 +19,5 @@ add edge 5 - 6
 add edge 5 - 7
 add edge 6 - 7
 
--- undirected test graph
-
+-- print graph
 new graph
---add vertex 1
---add vertex 2
---add vertex 10
---add vertex 111
---add edge 1 - 2
---add edge 2 - 10
---add edge 10 - 111
---add edge 111 - 1
-
---new graph
-

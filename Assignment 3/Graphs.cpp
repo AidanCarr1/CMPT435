@@ -112,7 +112,7 @@ public:
         int size = vertices.size();
         
         //print header
-        std::cout << "GRAPH AS A MATRIX:\n" << std::endl;
+        std::cout << "\nGRAPH AS A MATRIX:\n" << std::endl;
         std::cout << "\t";
         for (int i = 0; i < size; i++){
             std::cout << vertices[i]->id << "\t";
@@ -138,9 +138,24 @@ public:
                     std::cout << ".";
                 }
                 std::cout << "\t";
-                
+            }
+            std::cout << std::endl;
+        }
+    }
 
-                //std::cout << "inside ";
+    //adjacency list
+    void printAsAdjacencyList(){
+        int size = vertices.size();
+    
+        std::cout << "\nGRAPH AS AN ADJACENCY LIST:\n" << std::endl;
+
+        for (int i = 0; i < size; i++){
+            //print header
+            std::cout << "[" << vertices[i]->id << "]";
+            
+            //search and print i's neighbors
+            for (int j = 0; j < vertices[i]->neighbors.size(); j++){
+                std::cout << " " << vertices[i]->neighbors[j]->id;
             }
             std::cout << std::endl;
         }
@@ -192,7 +207,7 @@ int main() {
                 if (! myGraph.isEmpty()){
                     //process graph
                     myGraph.printAsMatrix();
-
+                    myGraph.printAsAdjacencyList();
                     //delete graph
                 }
             }
@@ -233,6 +248,8 @@ int main() {
                 std::cout << currentLine << "\n" << std::endl;
             }
         }
+        //print the final graph
+        //
     }
     else {}
     graphsFile.close();
