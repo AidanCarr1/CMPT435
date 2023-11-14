@@ -97,6 +97,58 @@ public:
         //add new Vertex to the list
         vertices.push_back(myVertex);
     }
+
+    //add edge
+    void addEdge(int index1, int index2){
+        //add neighbor for both Vertices
+        vertices[index1]->addNeighbor(vertices[index2]);
+        vertices[index2]->addNeighbor(vertices[index1]);
+    }
+
+
+    //print/display methods:
+    //matrix
+    void printAsMatrix(){
+        int size = vertices.size();
+        
+        //print header
+        std::cout << "GRAPH AS A MATRIX:\n" << std::endl;
+        std::cout << "\t";
+        for (int i = 0; i < size; i++){
+            std::cout << vertices[i]->id << "\t";
+        }
+        std::cout << std::endl;
+
+        for (int r = 0; r < size; r++){
+            //print header
+            std::cout << vertices[r]->id << "\t";
+            
+            for (int c = 0; c < size; c++){
+                bool isEdge = false;
+                
+                //search r's neighbors for c
+                for (int j = 0; j < vertices[r]->neighbors.size(); j++){
+                    if (isEqual(vertices[r]->neighbors[j]->id, vertices[c]->id)){
+                        std::cout << "1";
+                        isEdge = true;
+                        break;
+                    }
+                }
+                if (! isEdge){
+                    std::cout << ".";
+                }
+                std::cout << "\t";
+                
+
+                //std::cout << "inside ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+
+
+
 };
 
 
@@ -114,13 +166,12 @@ int main() {
     string currentLine;
     if (graphsFile.is_open()){
 
-        //go line by line in the file
+        //interpret the file, line by line
         while (graphsFile){
             
             //get line as a string, and find length
             std::getline(graphsFile, currentLine); 
             int strLength = currentLine.length();
-
             //std::cout << currentLine << endl; //test line
 
             //empty line, ignore line
@@ -140,6 +191,8 @@ int main() {
                 //if there is a previous graph, process it
                 if (! myGraph.isEmpty()){
                     //process graph
+                    myGraph.printAsMatrix();
+
                     //delete graph
                 }
             }
@@ -147,7 +200,7 @@ int main() {
             //new vertex
             else if (currentLine.compare(4,6,"vertex") == 0){
                 string id = currentLine.substr(11, 11-strLength);
-                std::cout << id << endl; //test line
+                //std::cout << id << std::endl; //test line
                
                 //add vertex to graph by id
                 myGraph.addVertex(id);
@@ -164,16 +217,15 @@ int main() {
                 //cout << "Dash at: " << dashIndex << endl; //test line
                 string id1 = currentLine.substr(9, dashIndex - 10);
                 string id2 = currentLine.substr(dashIndex + 2, strLength);
-                cout << "ID1: " << id1 << ". ID2: " << id2 << endl; //test line
+                //cout << "ID1: " << id1 << ". ID2: " << id2 << endl; //test line
 
-                //ERROR
+                //find index of each id
                 int index1 = myGraph.findVertexById(id1);
                 int index2 = myGraph.findVertexById(id2);
-                cout << "Index: " << index1 << ", " << index2 << endl; //test line
+                //cout << "Index: " << index1 << ", " << index2 << endl; //test line
                 
-                //create neighbors for both Vertices
-                myGraph.vertices[index1]->addNeighbor(myGraph.vertices[index2]);
-                myGraph.vertices[index2]->addNeighbor(myGraph.vertices[index1]);
+                //add edge in the graph using the Vertex indexes
+                myGraph.addEdge(index1, index2);
             }
 
             else {
