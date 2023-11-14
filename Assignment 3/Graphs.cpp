@@ -161,9 +161,30 @@ public:
         }
     }
 
+    //linked objects
+    void printAsLinkedObjects(){
+        int size = vertices.size();
+        std::cout << "\nGRAPH AS LINKED OBJECTS:\n" << std::endl;
 
+        for (int i = 0; i < size; i++){
+            //print id
+            std::cout << "ID: " << vertices[i]->id << std::endl;
+            
+            //processed
+            string isThisProcessed = (vertices[i]->isProcessed)?"true":"false";
+            std::cout << "Processed: " << isThisProcessed << std::endl;
 
-
+            //search and print i's neighbors
+            std::cout << "Neighbors: <";
+            for (int j = 0; j < vertices[i]->neighbors.size(); j++){
+                std::cout << vertices[i]->neighbors[j]->id;
+                if (j < vertices[i]->neighbors.size() - 1){
+                    std::cout << ", ";
+                } 
+            }
+            std::cout << ">\n" << std::endl;
+        }
+    }
 };
 
 
@@ -205,9 +226,12 @@ int main() {
                 
                 //if there is a previous graph, process it
                 if (! myGraph.isEmpty()){
+                    
                     //process graph
                     myGraph.printAsMatrix();
                     myGraph.printAsAdjacencyList();
+                    myGraph.printAsLinkedObjects();
+
                     //delete graph
                 }
             }
