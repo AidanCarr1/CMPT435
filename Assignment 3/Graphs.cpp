@@ -19,21 +19,66 @@ const int _LINES_IN_FILE = 375; //number of lines in graphs1.txt
 
 
 
-//Node class of BST, 2 children, 1 parent
+//Compare 2 strings for equality
+bool isEqual(string first, string second){
+
+    //find correct length to avoid out of bound error when comparing
+    //different lengths means definetly not equal
+    int length1 = first.length();
+    int length2 = second.length();
+    if (length1 != length2){
+        return false;
+    }
+
+    //compare letter by letter until an unequal character string is found
+    for (int i = 0; i < length1; i++){
+        if (first.at(i) != second.at(i)){
+            return false;
+        }
+    }
+
+    //if the two words have passed, its equal
+    return true;
+}
+
+
+//Vertex class
 class Vertex {
 
 public:
-    int id;
+    string id;
+    bool isProcessed;
     vector<Vertex*> neighbors; //array of neightbors
 
     //Constructor
-    Vertex(int idInput){
+    Vertex(string idInput){
         id = idInput;
+        isProcessed = false;
     }
 
     //add a vertex neighbor
     void addNeighbor(Vertex* newNeighbor){
         neighbors.push_back(newNeighbor);
+    }
+};
+
+
+class Graph {
+
+public:
+    vector<Vertex*> vertices;
+    
+    //Constructor
+    Graph(){
+    }    
+
+    //Method:
+    int findVertexById(string target){
+        for (int i = 0; i < vertices.size(); i++){
+            if (isEqual(target, vertices[i]->id)){
+                return i;
+            }
+        }
     }
 };
 
@@ -69,22 +114,31 @@ int main() {
             //new graph
             else if (currentLine.compare(0,3,"new") == 0){
                 //std::cout << "NEW graph" << endl;
-                //print the previous graph (if previous exists)
+                //if first graph, create graph
+                Graph myGraph = Graph();
+                //process the previous graph (if previous exists)
                 //delete graph
             }
 
             //new vertex
             else if (currentLine.compare(4,6,"vertex") == 0){
                 int strLength = currentLine.length();
-                int vertexNum = stoi(currentLine.substr(11,11-strLength));
-                std::cout << vertexNum << endl; //test line
+                string id = currentLine.substr(11,11-strLength);
+                std::cout << id << endl; //test line
 
                 //create vertex object
+                Vertex myVertex = Vertex(id);
+                
+                //BOOKMARK HERE
+                //add vertex to graph
+                myGraph.addVertex(id);
+
             }
 
             //new edge
             else if (currentLine.compare(4,4,"edge") == 0){
-
+                //create neighbor for first vertex
+                //create neighbor for second vertex
             }
 
             else {
