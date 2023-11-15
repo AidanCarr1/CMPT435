@@ -1,5 +1,5 @@
 // Aidan Carr
-// November 6, 2023
+// November 14, 2023
 // Undirected Graphs
 
 //Compiled using g++
@@ -16,6 +16,96 @@ using namespace std;
 //GLOBAL variables
 const string _FILE_NAME = "graphs0.txt";
 const int _LINES_IN_FILE = 375; //number of lines in graphs1.txt
+
+
+
+//VERTEX CLASS
+class Vertex {
+
+public:
+    string id;
+    bool isProcessed;
+    vector<Vertex*> neighbors; //array of neightbors
+
+    //Constructor
+    Vertex(string idInput){
+        id = idInput;
+        isProcessed = false;
+    }
+
+    //add a vertex neighbor
+    void addNeighbor(Vertex* newNeighbor){
+        neighbors.push_back(newNeighbor);
+    }
+};
+
+//Node class, used in Queue class
+class Node {
+
+public:
+    Vertex* content;
+    Node* next;
+
+    //Constructors
+    Node(Vertex* input){
+        content = input;
+        next = nullptr;
+    }
+};
+
+//Queue class, used in BFT
+class Queue{
+
+public:
+    Node* head;
+    Node* tail;
+
+    //Constructor
+    Queue(){
+        head = nullptr;
+        tail = nullptr;
+    }
+
+    //METHODS
+    //return true if Empty
+    bool isEmpty(){
+        if (tail == nullptr || head == nullptr){
+            return true;
+        }
+        return false;
+    }
+
+    //enqueue/add to back of queue
+    void enqueue(Node* newTail){
+        //add a head if it is the first in line
+        if (isEmpty()){
+            head = newTail;
+        }
+        else {
+            //put new tail behind the old tail
+            tail->next = newTail;
+        }
+        //make this queue's tail this new tail
+        tail = newTail;
+    }
+    //enqueue a Vertex (use enqueue() method with a new Node)
+    void enqueue(Vertex* myVertex){
+        Node* myNode = new Node(myVertex);
+        enqueue(myNode);
+    }
+
+    //dequeue/retrieve from front of queue
+    Vertex* dequeue(){
+        //cant dequeue if there is nothing to dequeue
+        if (isEmpty()){
+            return nullptr;
+        }
+        //return the head Vertex
+        Vertex* dequeuing = head->content;
+        head = head->next;
+        return dequeuing;
+    }
+};
 
 
 
@@ -43,28 +133,7 @@ bool isEqual(string first, string second){
 
 
 
-//Vertex class
-class Vertex {
-
-public:
-    string id;
-    bool isProcessed;
-    vector<Vertex*> neighbors; //array of neightbors
-
-    //Constructor
-    Vertex(string idInput){
-        id = idInput;
-        isProcessed = false;
-    }
-
-    //add a vertex neighbor
-    void addNeighbor(Vertex* newNeighbor){
-        neighbors.push_back(newNeighbor);
-    }
-};
-
-
-
+//GRAPH CLASS
 class Graph {
 
 public:
@@ -109,6 +178,7 @@ public:
 
 
     //PRINT/DISPLAY methods:
+
     //matrix
     void printAsMatrix(){
         int size = vertices.size();
@@ -163,7 +233,8 @@ public:
         }
     }
 
-    //linked objects
+    //linked objects, not used 
+    /*
     void printAsLinkedObjects(){
         int size = vertices.size();
         std::cout << "\nGRAPH AS LINKED OBJECTS:\n" << std::endl;
@@ -186,14 +257,16 @@ public:
             }
             std::cout << ">\n" << std::endl;
         }
-    }
+    } 
+    */
+
 
     //TRAVERSAL METHODS:
     
-    //dft
+    //depth-ft
     void depthFirstTraversal(Vertex* fromVertex){
         if (! fromVertex->isProcessed){
-            std::cout << fromVertex->id;
+            std::cout << fromVertex->id << " ";
             fromVertex->isProcessed = true;
         }
         for (int i = 0; i < fromVertex->neighbors.size(); i++){
@@ -210,9 +283,24 @@ public:
         }
     }
 
-    //bft
+    //breadth-ft
     void breadthFirstTraversal(Vertex* fromVertex){
-        //BOOKMARK
+        Queue* myQueue = new Queue();
+        myQueue->enqueue(fromVertex);
+        fromVertex->isProcessed = true;
+
+        while (! myQueue->isEmpty()){
+            Vertex* currentVertex = myQueue->dequeue();
+            std::cout << currentVertex->id << " ";
+
+            for (int i = 0; i < currentVertex->neighbors.size(); i++){
+                //check this level's neighbors first (breadth first)
+                if (! currentVertex->neighbors[i]->isProcessed){
+                    myQueue->enqueue(currentVertex->neighbors[i]);
+                    currentVertex->neighbors[i]->isProcessed = true;
+                }
+            }
+        }
     }
 };
 
@@ -260,16 +348,16 @@ int main() {
                     //process Graph
                     myGraph.printAsMatrix();
                     myGraph.printAsAdjacencyList();
-                    myGraph.printAsLinkedObjects();
+                    //myGraph.printAsLinkedObjects();
 
-                    std::cout << "DEPTH-FIRST TRAVERSAL" << std::endl;
+                    std::cout << "\nDEPTH-FIRST TRAVERSAL" << std::endl;
                     myGraph.depthFirstTraversal(myGraph.vertices[0]);
                     std::cout << "\n" <<std::endl;
                     myGraph.unprocessAll();
 
                     std::cout << "BREADTH-FIRST TRAVERSAL" << std::endl;
                     myGraph.breadthFirstTraversal(myGraph.vertices[0]);
-                    std::cout << "\n" <<std::endl;
+                    std::cout << "\n\n\n" <<std::endl;
                     
                     //delete Graph
                 }

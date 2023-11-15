@@ -1,5 +1,6 @@
--- undirected 7-vertex 11-edge tutorial
+-- undirected Zork Map (ground level) w/ 3 disconnected components
 new graph
+add vertex 0
 add vertex 1
 add vertex 2
 add vertex 3
@@ -7,17 +8,43 @@ add vertex 4
 add vertex 5
 add vertex 6
 add vertex 7
+add vertex 8
+add vertex 9
+add vertex 10
+add vertex 11
+add vertex 12
+add vertex 13
+add vertex 14
+add vertex 15
+add vertex 16
+add vertex 17
+add vertex 18
+add vertex 19
+add vertex 20
+add edge 0 - 1
+add edge 0 - 3
+add edge 0 - 13
 add edge 1 - 2
-add edge 1 - 5
-add edge 1 - 6
+add edge 1 - 14
 add edge 2 - 3
-add edge 2 - 5
-add edge 2 - 6
-add edge 3 - 4
+add edge 2 - 7
+add edge 3 - 12
 add edge 4 - 5
-add edge 5 - 6
-add edge 5 - 7
-add edge 6 - 7
+add edge 4 - 6
+add edge 7 - 8
+add edge 7 - 12
+add edge 7 - 17
+add edge 8 - 12
+add edge 8 - 9
+add edge 9 - 11
+add edge 10 - 11
+add edge 12 - 13
+add edge 13 - 14
+add edge 13 - 15
+add edge 14 - 15
+add edge 14 - 16
+add edge 15 - 17
+add edge 17 - 18
+add edge 19 - 20
 
---for printing purposes
 new graph
