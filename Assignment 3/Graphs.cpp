@@ -1,5 +1,5 @@
 // Aidan Carr
-// November 14, 2023
+// November 16, 2023
 // Undirected Graphs
 
 //Compiled using g++
@@ -39,7 +39,7 @@ public:
     }
 };
 
-//Node class, used in Queue class
+//NODE CLASS, used in Queue class
 class Node {
 
 public:
@@ -53,7 +53,7 @@ public:
     }
 };
 
-//Queue class, used in BFT
+//QUEUE CLASS, used in BFT
 class Queue{
 
 public:
@@ -233,33 +233,6 @@ public:
         }
     }
 
-    //linked objects, not used 
-    /*
-    void printAsLinkedObjects(){
-        int size = vertices.size();
-        std::cout << "\nGRAPH AS LINKED OBJECTS:\n" << std::endl;
-
-        for (int i = 0; i < size; i++){
-            //print id
-            std::cout << "ID: " << vertices[i]->id << std::endl;
-            
-            //processed
-            string isThisProcessed = (vertices[i]->isProcessed)?"true":"false";
-            std::cout << "Processed: " << isThisProcessed << std::endl;
-
-            //search and print i's neighbors
-            std::cout << "Neighbors: <";
-            for (int j = 0; j < vertices[i]->neighbors.size(); j++){
-                std::cout << vertices[i]->neighbors[j]->id;
-                if (j < vertices[i]->neighbors.size() - 1){
-                    std::cout << ", ";
-                } 
-            }
-            std::cout << ">\n" << std::endl;
-        }
-    } 
-    */
-
 
     //TRAVERSAL METHODS:
     
@@ -313,18 +286,39 @@ int main() {
     //create Graph
     Graph myGraph = Graph();
 
-    //Open the file
+    //open the file
     std::ifstream graphsFile;
     graphsFile.open(_FILE_NAME);
+    
+    //create vector
+    int fileLength = 0;
+    vector<string> fileCommands;
 
     string currentLine;
     if (graphsFile.is_open()){
 
-        //interpret the file, line by line
+        //read the file into a vector
+        string currentLine;
+
         while (graphsFile){
-            
-            //get line as a string, and find length
+            //insert commands into vector
             std::getline(graphsFile, currentLine); 
+            fileCommands.push_back(currentLine);
+            fileLength++;
+        }
+        //IO duplicates final line, delete it
+        fileCommands.pop_back(); 
+        //print out final graph
+        fileCommands.push_back("new graph");
+
+    }    
+    else {}
+    graphsFile.close();    
+
+        //interpret file commands
+        for(int line = 0; line < fileLength; line ++){
+            //get line as a string, and find length
+            string currentLine = fileCommands[line]; 
             int strLength = currentLine.length();
             //std::cout << currentLine << endl; //test line
 
@@ -398,9 +392,4 @@ int main() {
                 std::cout << "ERROR: '" << currentLine << "'" << std::endl;
             }
         }
-        //process the final Graph
-        //add all here, or make a funtions
-    }
-    else {}
-    graphsFile.close();
 }
