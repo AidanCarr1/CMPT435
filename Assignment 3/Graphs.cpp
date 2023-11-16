@@ -25,7 +25,7 @@ class Vertex {
 public:
     string id;
     bool isProcessed;
-    vector<Vertex*> neighbors; //array of neightbors
+    vector<Vertex*> neighbors; //array of neighbors
 
     //Constructor
     Vertex(string idInput){
@@ -67,7 +67,8 @@ public:
     }
 
     //METHODS
-    //return true if Empty
+
+    //return true if nothing in queue
     bool isEmpty(){
         if (tail == nullptr || head == nullptr){
             return true;
@@ -88,7 +89,8 @@ public:
         //make this queue's tail this new tail
         tail = newTail;
     }
-    //enqueue a Vertex (use enqueue() method with a new Node)
+
+    //enqueue a Vertex (create new Node, use enqueue())
     void enqueue(Vertex* myVertex){
         Node* myNode = new Node(myVertex);
         enqueue(myNode);
@@ -112,7 +114,7 @@ public:
 //Compare 2 strings for equality
 bool isEqual(string first, string second){
 
-    //find correct length to avoid out of bound error when comparing
+    //find correct length to avoid out of bounds error when comparing
     //different lengths means definetly not equal
     int length1 = first.length();
     int length2 = second.length();
@@ -127,7 +129,7 @@ bool isEqual(string first, string second){
         }
     }
 
-    //if the two words have passed, its equal
+    //if the two words have passed, they ARE equal
     return true;
 }
 
@@ -147,10 +149,10 @@ public:
     //return int location of Vertex in Graph given string id
     int findVertexById(string target){
         
-        //cout << "Size of Vertices vector: " << vertices.size() << endl; //test line
+        //traverse the vector of Vertices
         for (int i = 0; i < vertices.size(); i++){
-            //cout << "current vector id: " << vertices[i]->id << endl; //test line
             if (isEqual(target, vertices[i]->id)){
+                //return index
                 return i;
             }
         }
@@ -192,13 +194,13 @@ public:
         std::cout << std::endl;
 
         for (int r = 0; r < size; r++){
-            //print header
+            //print line title
             std::cout << vertices[r]->id << "\t";
             
             for (int c = 0; c < size; c++){
                 bool isEdge = false;
                 
-                //search r's neighbors for c
+                //search each one of r's neighbors for c
                 for (int j = 0; j < vertices[r]->neighbors.size(); j++){
                     if (isEqual(vertices[r]->neighbors[j]->id, vertices[c]->id)){
                         std::cout << "1";
@@ -222,7 +224,7 @@ public:
         std::cout << "\nGRAPH AS AN ADJACENCY LIST:\n" << std::endl;
 
         for (int i = 0; i < size; i++){
-            //print header
+            //print line title
             std::cout << "[" << vertices[i]->id << "]";
             
             //search and print i's neighbors
@@ -238,10 +240,14 @@ public:
     
     //depth-ft
     void depthFirstTraversal(Vertex* fromVertex){
+        
+        //process current Vertex
         if (! fromVertex->isProcessed){
             std::cout << fromVertex->id << " ";
             fromVertex->isProcessed = true;
         }
+        
+        //check 1 neighbor at a time, perform dft
         for (int i = 0; i < fromVertex->neighbors.size(); i++){
             if (! fromVertex->neighbors[i]->isProcessed){
                 depthFirstTraversal(fromVertex->neighbors[i]);
@@ -258,16 +264,21 @@ public:
 
     //breadth-ft
     void breadthFirstTraversal(Vertex* fromVertex){
+        
+        //create a Queue, process current Vertex
         Queue* myQueue = new Queue();
         myQueue->enqueue(fromVertex);
         fromVertex->isProcessed = true;
 
         while (! myQueue->isEmpty()){
+
+            //dequeue and perform bft on this Vertex
             Vertex* currentVertex = myQueue->dequeue();
             std::cout << currentVertex->id << " ";
 
             for (int i = 0; i < currentVertex->neighbors.size(); i++){
-                //check this level's neighbors first (breadth first)
+                
+                //check this level's neighbors (breadth first) by adding to queue
                 if (! currentVertex->neighbors[i]->isProcessed){
                     myQueue->enqueue(currentVertex->neighbors[i]);
                     currentVertex->neighbors[i]->isProcessed = true;
@@ -293,7 +304,7 @@ public:
 //Read graphs file and interpret: make Graphs, Vertices, edges
 int main() {
 
-    //create Graph
+    //create Graph object (will be reused for all Graphs)
     Graph myGraph = Graph();
 
     //open the file
@@ -308,14 +319,13 @@ int main() {
     if (graphsFile.is_open()){
 
         //read the file into a vector
-        string currentLine;
-
         while (graphsFile){
             //insert commands into vector
             std::getline(graphsFile, currentLine); 
             fileCommands.push_back(currentLine);
             fileLength++;
         }
+
         //IO duplicates final line, delete it
         fileCommands.pop_back(); 
         //print out final graph
@@ -325,83 +335,76 @@ int main() {
     else {}
     graphsFile.close();    
 
-        //interpret file commands
-        for(int line = 0; line < fileLength; line ++){
-            //get line as a string, and find length
-            string currentLine = fileCommands[line]; 
-            int strLength = currentLine.length();
-            //std::cout << currentLine << endl; //test line
 
-            //empty line, ignore line
-            if (currentLine.compare(0,1,"") == 0){
-                //std::cout << "empty line" << endl; //test line
-            }
+    //INTERPRET ALL COMMANDS
+    for(int line = 0; line < fileLength; line ++){
 
-            //comment, ignore line
-            else if (currentLine.compare(0,2,"--") == 0){
-                //std::cout << "comment" << endl; //test line
-            }
+        //get line as a string, and find length
+        string currentLine = fileCommands[line]; 
+        int strLength = currentLine.length();
 
-            //new Graph
-            else if (currentLine.compare(0,3,"new") == 0){
-                //std::cout << "NEW Graph" << endl;               
+        //empty line, ignore line
+        if (currentLine.compare(0,1,"") == 0){
+        }
+
+        //comment, ignore line
+        else if (currentLine.compare(0,2,"--") == 0){
+        }
+
+        //new Graph
+        else if (currentLine.compare(0,3,"new") == 0){
+            
+            //if there is a previous Graph, process it
+            if (! myGraph.isEmpty()){
                 
-                //if there is a previous Graph, process it
-                if (! myGraph.isEmpty()){
-                    
-                    //process Graph
-                    myGraph.printAsMatrix();
-                    myGraph.printAsAdjacencyList();
-                    //myGraph.printAsLinkedObjects();
+                //process Graph
+                myGraph.printAsMatrix();
+                myGraph.printAsAdjacencyList();
 
-                    std::cout << "\nDEPTH-FIRST TRAVERSAL" << std::endl;
-                    myGraph.depthFirstTraversal(myGraph.vertices[0]);
-                    std::cout << "\n" <<std::endl;
-                    myGraph.unprocessAll();
+                std::cout << "\nDEPTH-FIRST TRAVERSAL" << std::endl;
+                myGraph.depthFirstTraversal(myGraph.vertices[0]);
+                std::cout << "\n" <<std::endl;
+                myGraph.unprocessAll();
 
-                    std::cout << "BREADTH-FIRST TRAVERSAL" << std::endl;
-                    myGraph.breadthFirstTraversal(myGraph.vertices[0]);
-                    std::cout << "\n\n\n" <<std::endl;
-                    
-                    //clear Graph
-                    myGraph.reset();
-
-                }
-            }
-
-            //new Vertex
-            else if (currentLine.compare(4,6,"vertex") == 0){
-                string id = currentLine.substr(11, 11-strLength);
-                //std::cout << id << std::endl; //test line
-               
-                //add Vertex to Graph by id
-                myGraph.addVertex(id);
-
-            }
-
-            //new edge
-            else if (currentLine.compare(4,4,"edge") == 0){
-                //Watch out for error: if final line in file is edge, the edge will be repeated
-                //cout << "Edge" << endl; //test line
+                std::cout << "BREADTH-FIRST TRAVERSAL" << std::endl;
+                myGraph.breadthFirstTraversal(myGraph.vertices[0]);
+                std::cout << "\n\n\n" <<std::endl;
                 
-                //find first and second id
-                int dashIndex = currentLine.find("-");
-                //cout << "Dash at: " << dashIndex << endl; //test line
-                string id1 = currentLine.substr(9, dashIndex - 10);
-                string id2 = currentLine.substr(dashIndex + 2, strLength);
-                //cout << "ID1: " << id1 << ". ID2: " << id2 << endl; //test line
+                //reset Graph object (and Vector objects)
+                myGraph.reset();
 
-                //find index of each id
-                int index1 = myGraph.findVertexById(id1);
-                int index2 = myGraph.findVertexById(id2);
-                //cout << "Index: " << index1 << ", " << index2 << endl; //test line
-                
-                //add edge in the graph using the Vertex indexes
-                myGraph.addEdge(index1, index2);
-            }
-
-            else {
-                std::cout << "ERROR: '" << currentLine << "'" << std::endl;
             }
         }
+
+        //new Vertex
+        else if (currentLine.compare(4,6,"vertex") == 0){
+            string id = currentLine.substr(11, 11-strLength);
+            
+            //add Vertex to Graph by id
+            myGraph.addVertex(id);
+
+        }
+
+        //new edge
+        else if (currentLine.compare(4,4,"edge") == 0){
+            
+            //find first and second id
+            int dashIndex = currentLine.find("-");
+            string id1 = currentLine.substr(9, dashIndex - 10);
+            string id2 = currentLine.substr(dashIndex + 2, strLength);
+
+            //find index of each id
+            int index1 = myGraph.findVertexById(id1);
+            int index2 = myGraph.findVertexById(id2);
+            
+            //add edge in the graph using the Vertex indexes
+            myGraph.addEdge(index1, index2);
+        }
+
+        //error check
+        //line in file doesn't follow my rules: tell the world, skip it, keep going
+        else {
+            std::cout << "ERROR on line " << line+1 << ":\n\t'" << currentLine << "'" << std::endl;
+        }
+    }
 }
