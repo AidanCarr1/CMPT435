@@ -14,7 +14,7 @@ using namespace std;
 
 
 //GLOBAL variables
-const string _FILE_NAME = "graphs0.txt";
+const string _FILE_NAME = "graphs1.txt";
 const int _LINES_IN_FILE = 375; //number of lines in graphs1.txt
 
 
@@ -275,6 +275,16 @@ public:
             }
         }
     }
+
+    //delete all Graph contents
+    void reset(){
+        //delete each Vertex
+        for (int i = 0; i < vertices.size(); i++){
+            delete vertices[i];
+        }
+        //reset the Vertices vector
+        vertices.clear();
+    }
 };
 
 
@@ -353,7 +363,9 @@ int main() {
                     myGraph.breadthFirstTraversal(myGraph.vertices[0]);
                     std::cout << "\n\n\n" <<std::endl;
                     
-                    //delete Graph
+                    //clear Graph
+                    myGraph.reset();
+
                 }
             }
 
