@@ -1,0 +1,566 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Assignment 3
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{Carr | page \thepage} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+% make code look nice
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{           
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2                    
+}
+
+%hopefully this fixes margins
+\usepackage[a4paper,
+            left=1in,
+            right=1in,
+            top=1in,
+            bottom=1in,
+            footskip=.25in]{geometry}
+
+\usepackage{blindtext}
+
+
+\lstset{style=mystyle}
+
+%------------------------------------------------
+%	TITLE SECTION
+%----------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2023 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	% Top horizontal rule
+   \huge Assignment Three: Graph and Tree Data Structures  \\     	    % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	% Bottom horizontal rule
+}
+
+\author{Aidan Carr \\ \normalsize Aidan.Carr1@Marist.edu}
+
+\date{\normalsize November 17, 2023} 	% Today's date.
+
+\begin{document}
+\maketitle % Print the title
+
+%----------------------------------------------------
+%   GRAPHS SECTION
+%-----------------------------------------------
+\section{Graphs}
+
+\subsection{What is a Graph?}
+Graphs in computer science are different than the xy graphs from math class. A Graph is a collection of Vertices connected together with a series of edges. Below in Figure~\ref{figure:ColorGraph}, each colored dot represents a Vertex and each black line represents the edge that connects those dots together. Graphs can be used to represent a number of things: road maps, social media connections, computer routing, and much more.
+
+%graph diagram
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=7cm]{ColorGraph.png}
+    \caption{Example of a simple Graph\footnotemark}
+    \label{figure:ColorGraph}
+    
+\end{figure}
+\footnotetext{https://www.freecodecamp.org/news/data-structures-101-graphs-a-visual-introduction-for-beginners-6d88f36ec768/.}
+
+
+\subsection{Assignment Goals}
+%graphs, describe the assignment, roughly how it will be coded graphs1.txt
+%(1 paragraph)
+In this assignment, the goal is to create, store, display, and traverse 5 unique graphs. Given the text file \href{https://www.labouseur.com/courses/algorithms/graphs1.txt}{graphs1.txt}, we will read commands that create the graph, add vertices, and add edges. For each new Vertex, we will create a Vertex object. This object will have an ID attribute and vector (or array, Array List) of neighbors. This neighbor vector will allows us to store the edges. After the graphs are fully created, we will print the graphs in two different ways. Then, we will learn how to traverse the graph using the edges.
+
+
+\pagebreak
+
+\subsection{Coding a Vertex Class}
+
+%explain vertex class
+Let's see how a Vertex can be stored as an object. In Figure~\ref{figure:VertexClass} on lines 4 through 6 we see the object's attributes. The string \texttt{id} represents the identifier. In the graph diagram in Figure~\ref{figure:ColorGraph}, this would be a color. For this assignment, it will simply be a number. 
+
+\texttt{isProcessed} will be used later in the graph traversals, and the \texttt{neighbors} vector is a list of Vertex pointers to surrounding Vertices that connect to this one via an edge. The \texttt{addNeighbor()} method on line 15 will take in a Vertex pointer as a parameter, and add it the the vector of neighbors.
+
+%vertex class (all)
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=21, lastline=38]{Graphs.cpp}
+    \caption{Vertex Class in C++}
+    \label{figure:VertexClass}
+\end{figure}
+
+
+\subsection{Coding a Graph Class}
+
+%explain graph class
+The Graph class constructor is very simple. With only one attribute, \texttt{vertices}, the constructor can remain blank. The vector of Vertex pointers is to keep track of all the Vertices created and associated with the Graph.
+
+%graph class (constructor )
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=137, lastline=144]{Graphs.cpp}
+    \caption{Graph Class Constructor in C++}
+    \label{figure:GraphConstructor}
+\end{figure}
+
+
+\pagebreak
+Figure~\ref{figure:GraphMethods} below shows four methods. The first, \texttt{findVertexById()}, takes in a target string on line 2 and searches through the Vertices associated with this Graph object. It compares the target with each Vertex's \texttt{id} until it finds what it is looking for. The method returns the index value within \texttt{vertices[]}. Next on line 15, \texttt{isEmpty()} checks if there is any Vertex in the Graph. 
+
+
+
+%Graph class (all basic methods)
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=147, lastline=177]{Graphs.cpp}
+    \caption{Graph Class Methods in C++}
+    \label{figure:GraphMethods}
+\end{figure}
+
+
+The \texttt{addVertex()} method has a string \texttt{id} as a parameter on line 20. A new Vertex pointer is created using \texttt{id}, and it is put into the vector of Vertex pointers. Finally on line 27, the \texttt{addEdge()} method uses to indexes from the parameters. Then, for each Vertex, it adds the other one as neighbor. It is import to do this for both given Vertices because this is an undirected graph. This means that neighbors one way imply a neighbor in the reverse direction.
+
+
+\subsection{Reading and Interpreting a File}
+In this assignment we are given a text file filled with commands that must be interpreted by the code. 
+
+Here is a list of commands we will read from the file:
+\begin{itemize}
+    \item \texttt{---- comment}
+    \item \texttt{new graph}
+    \item \texttt{add vertex 0}
+    \item \texttt{add edge 0 - 1 }
+\end{itemize}
+
+\pagebreak
+
+Let's first see how we get that file into C++. Figure~\ref{figure:FileReading} is a snippet of the main function. We start by making a Graph object on line 1. This is our permanent Graph for the whole code, it will be repurposed. Then we open the file and make an empty vector on line 9. And we traverse the file and put into the vector line by line on lines 15 through 19.
+
+Once the vector is filled, we will remove the final element because file reading duplicates it here, then we can add the line "new graph". This function will be explained later.
+
+
+
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=305, lastline=335]{Graphs.cpp}
+    \caption{Graph Class Methods in C++}
+    \label{figure:FileReading}
+\end{figure}
+
+Figure~\ref{figure:SkipCommands} below starts off by looping the vector of commands on line 8. The command is stored in \texttt{currentLine}. On line 8, we see if the command is blank, then we skip that line. If the command begins with "\texttt{----}", then we also skip this line by doing nothing on line 12.
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=338, lastline=350]{Graphs.cpp}
+    \caption{First Simple Graph Reading Commands in C++}
+    \label{figure:SkipCommands}
+\end{figure}
+
+\pagebreak
+
+
+Next, we'll move onto more complex commands in Figure~\ref{figure:NewVertexEdge}. On line 2, we check if the file wants a new Vertex (line 2). We'll find the substring of the \texttt{id} and use the \texttt{addVertex()} method.
+
+When creating a new edge on line 11, we find the index of the dash and use this number to find the two unique \texttt{id}s. We find the integer index for each \texttt{id} using \texttt{findVertexById()} on lines 19 and 20. Then, we call the \texttt{addEdge()} method on line 23.
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=377, lastline=400]{Graphs.cpp}
+    \caption{More Graph Reading Commands in C++}
+    \label{figure:NewVertexEdge}
+\end{figure}
+
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=353, lastline=375]{Graphs.cpp}
+    \caption{Another Graph Command in C++ (last one I promise)}
+    \label{figure:NewGraph}
+\end{figure}
+
+
+
+When creating a new Graph, we first check if there is an existing Graph. On line 4 of Figure~\ref{figure:NewGraph} we check to see if the Graph is empty. If it is, we may proceed. However, it it is populated, we must process it. If you remember from earlier in the section we added "new graph" to the end of our file, we did this to process the final graph.
+
+\pagebreak
+
+Processing includes steps that we will dive into later. We print the Graph as both a matrix and an adjacency list on lines 7 and 8. Then we traverse the graph using Depth-first traversal on line 11, unprocess the Vertices, and traverse it again using Breadth-first traversal on line 16. Finally, we reset the Graph (we will see how this method works later).
+
+Finally, in Figure~\ref{figure:ErrorCheck}, we see that unknown commands are printed, then skipped.
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=402, lastline=406]{Graphs.cpp}
+    \caption{Error Check in C++ (I lied)}
+    \label{figure:ErrorCheck}
+\end{figure}
+
+
+\subsection{Graph Representations}
+Excellent! We have created our Graphs from reading a file and stored them. Now let's look at two ways to print them out, starting off with a matrix in Figure~\ref{figure:MatrixCode} below.
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=182, lastline=216]{Graphs.cpp}
+    \caption{Printing a Graph as a Matrix in C++}
+    \label{figure:MatrixCode}
+\end{figure}
+
+
+
+On lines 5 through 11, we print out the top row of the matrix, a list of every Vertex. We loop through each row \texttt{r} and column \texttt{c}. We check \texttt{r}'s neighbors and look for the \texttt{id} of Vertex \texttt{c} on lines 21 and 22. If there is an edge, we will print out a "1"  on line 23 if not, we print out "." on line 29. 
+
+\pagebreak
+
+Here is what a matrix printed out will look like:
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=8cm]{MatrixOutput.png}
+    \caption{An Example Matrix Output}
+    \label{figure:MatrixOutput}
+    
+\end{figure}
+
+
+Let's see how to print an adjacency list in Figure~\ref{figure:AdjListCode} below. We simply loop through the Graph's list of Vertices on line 7. For each one, we print the \texttt{id} of every Vertex in the particular Vertex's \texttt{neighbors} list. An example output is below in Figure~\ref{figure:ALOutput}.
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=219, lastline=234]{Graphs.cpp}
+    \caption{Printing a Graph as an Adjacency List in C++}
+    \label{figure:AdjListCode}
+\end{figure}
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=3.8cm]{ALOutput.png}
+    \caption{An Example Adjacency List Output}
+    \label{figure:ALOutput}
+    
+\end{figure}
+
+\pagebreak
+
+
+\subsection{Graph Traversals}
+Now, let's see what a Graph traversal is. Depth-first traversal starts at a certain Vertex, then checks its neighbors. The first neighbor checked will then be traversed using depth-first traversal. This method dives to the deepest connections first, then builds its way back up. Let's see it in code in Figure~\ref{figure:DFTCode}.
+
+We first process the input Vertex on line 5 through 8. Processing means we have found (and will be displaying) this Vertex. Next, on line 11, we check all of this Vertex's neighbors and depth-first traverse them. \texttt{depthFirstTraversal()} is recursively called until we reach a Vertex whose neighbors have all been processed. This is the base case. We then step back and continue where we left off. We use the run time stack in this traversal.
+
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=239, lastline=254]{Graphs.cpp}
+    \caption{Depth-First Traversal in C++}
+    \label{figure:DFTCode}
+\end{figure}
+
+The complexity of depth-first traversal is the sum of Vertices and edges:
+\[O(V + E)\] 
+The reason can be seen on line 11. This loops through every Vertex AND checks each one of its neighbors (or edges), adding these two values up. Depth-first traversal only performs a traversal if the Vertex has not been processed. Meaning, no duplicate runs of the function, saving on time complexity.
+
+The output for depth-first traversal for the same Graph as the matrix and adjacency list is:
+\[1, 2, 3, 4, 5, 6, 7\] 
+
+
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=256, lastline=261]{Graphs.cpp}
+    \caption{Unprocess Vertices in C++}
+    \label{figure:Unprocess}
+\end{figure}
+
+One method we will have to add is \texttt{unprocessAll()} seen above in Figure~\ref{figure:Unprocess}. This will traverse the Graph's vector of Vertices and set their \texttt{isProcessed} value to false. This will allow the next traversal to work.
+
+\pagebreak
+
+
+Next we have, breadth-first traversal. Breadth-first traversal starts at a certain Vertex, then checks all its neighbors first. After processing all these original neighbors, that first neighbor checked will then be traversed using breadth-first traversal. This method traverses the earlier connections first, then goes to deeper connections. The code can be seen in Figure~\ref{figure:BFTCode}. 
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=264, lastline=286]{Graphs.cpp}
+    \caption{Breadth-First Traversal in C++}
+    \label{figure:BFTCode}
+\end{figure}
+
+
+We first create a Queue using a similar class to one we built in Assignment 1 and enqueue the first Vertex. We then loop until the Queue is emptied on line 8. In the loop, we output the head of the queue on lines 11 and 12. Then, we check the neighbors of the recently dequeued Vertex on line 14. Here, we enqueue each neighbor that has yet to be processed. These will eventually be dequeued and their neighbors will be checked later on.
+
+
+The complexity of breadth-first traversal is the sum of Vertices and edges:
+\[O(V + E)\] 
+This is the same complexity as the previous traversal because we are once again checking each Vertex and each edge. The only difference is the order in which we traverse. On line 11, we are dequeuing a Vertex each loop. This is the Vertex aspect of the complexity. Then, on line 14, we are checking each neighbor (edge) to see what needs to be processed. After the traversal is complete, we have checked each Vertex once and each of their neighbors once.
+
+The output for breadth-first traversal for the same Graph is:
+\[1, 2, 5, 6, 3, 4, 7\] 
+
+\pagebreak
+
+
+\section{Trees}
+\subsection{Intorduction to Trees}
+Trees are another data structure; in fact, a tree is a form of a graph. This graph, however, has more constraints. The specific tree that will be focused on in this assignment is a binary search tree. Figure~\ref{figure:BST} shows what a Binary Search Tree looks like.
+
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=6cm]{BST.png}
+    \caption{A Binary Search Tree\footnotemark}
+    \label{figure:BST}
+
+\end{figure}
+\footnotetext{Image: https://en.wikipedia.org/wiki/Binary\_search\_tree.}
+
+Starting at the top, we have our first Node, the root Node. This node has a value of 8. Each Node has a left child and a right child. 8's left child is 3 and its right child is 10. Notice that the left is less than 8 and the right is greater than eight. This data structure sorts the data as it is stored. This makes finding data in the structure quick.
+
+\subsection{Assignment Goals}
+For this part of the assignment, we will use the file of magic items from the previous two assignments. We will put each item into the binary search tree, printing out the paths taken to input each item. 
+
+Next, we will complete an in-order traversal. This function prints the magic items in alphabetical order using properties of the Binary Search tree. Then, we will search for 42 specified items using a search function. For each item, we will print out the number of comparisons required in order to approximate the asymptotic running time.
+
+\subsection{Coding a Binary Search Tree and Node Class}
+
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=50, lastline=59]{BinarySearchTree.cpp}
+    \caption{BST Class in C++}
+    \label{figure:BSTClass}
+\end{figure}
+
+The Binary Search Tree class is simple. The only attribute is a Node pointer to the root node of the tree. When constructed on line 7, this value is set to a null pointer. See Figure~\ref{figure:BSTClass} above.
+
+\pagebreak
+
+Next, we have the Node class. This is a variation on previous Node classes. On lines 4 through 7 of Figure~\ref{figure:NodeClass}, there are four attributes. \texttt{itemName} is the string name of the node, and there are three pointers to other Nodes: \texttt{parent} (the Node above), \texttt{left} (the Node down and to the left", and \texttt{right} (down and... you get it).
+
+When constructing an object, all of the Node pointer values are set to null pointer. The \texttt{itemName} is either set to an input string, or an empty string.
+
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=25, lastline=46]{BinarySearchTree.cpp}
+    \caption{Node Class in C++}
+    \label{figure:NodeClass}
+\end{figure}
+
+
+
+
+\subsection{Coding Binary Search Tree Functions}
+Now that we've see what the classes look like, let's jump to the main function in our file. After inputting the contents of the text file into a \texttt{magicItems} array (see previous assignments), we create our Binary Search Tree (BST) object.
+
+Looping through each item on line 5 of Figure~\ref{figure:MainInsert}, we inserts all 666 items into the BST object.
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=224, lastline=232]{BinarySearchTree.cpp}
+    \caption{Inserting Strings into a BST in C++}
+    \label{figure:MainInsert}
+\end{figure}
+
+Here, we have reached the first major function: \texttt{insert()}. Here is how to insert a string into a Binary Search Tree. Let's see that function using the example BST in Figure~\ref{figure:SimpleBST}.
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=3cm]{SimpleBST.png}
+    \caption{Small BST Example}
+    \label{figure:SimpleBST}
+    
+\end{figure}
+
+\pagebreak
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=133, lastline=167]{BinarySearchTree.cpp}
+    \caption{Insert Function of a BST in C++}
+    \label{figure:Insert}
+\end{figure}
+
+
+Let's pretend there is already some data in this BST using Figure~\ref{figure:SimpleBST}. The root Node is a (5), and there is a (1) to the left, and a (7) to the right. And, say we are adding a (3) to the data.
+
+We start on line 4 and 5 of Figure~\ref{figure:Insert} by creating a new Node. Next, we set \texttt{trailing} and \texttt{current} Node pointers. So, the \texttt{trailing} is null, the current is (5) and \texttt{myNode} is (3). a On line 11 we check to see if there even is a root at all. We set the root (5) to the \texttt{trailing} value. Then, we make our first comparison on line 13. In the \texttt{isLessThan()} function, our comparison counter increments. If (3) belongs to the left of \texttt{current} (5) we make the new \texttt{current} point to (5)'s left child. Here we also print out "L". If that (3) was actually greater than or equal to (5), we would go to the right and print "R". 
+
+Now, we recheck the while loop to see that we are looking at 5's left, (1). This is the new \texttt{trailing}, and we repeat. (3) belongs to the right of this value, so we branch to lines 17 through 19. Because (1) has no right child value, we exit the while loop.
+
+Now, at line 25, we make the new Node's parent equal \texttt{trailing}. Line 26 shows how to insert a new root Node, 29 adds the New to the left of the bottom leaf Node we left off at, line 32 and 33 adds it to the right. Now repeat 666 times, that's a big tree! Not as big as the one in Figure~\ref{figure:Tree}.
+\\\\
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=2.5cm]{bab.png}
+    \caption{It's bigger in real life\footnotemark}
+    \label{figure:Tree}
+    
+\end{figure}
+\footnotetext{https://www.oneearth.org/species-of-the-week-african-baobab-tree/.}
+
+\pagebreak
+
+Back out in the main function, \texttt{inOrderTraversal()} is called. Let's check out the function code.
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=171, lastline=183]{BinarySearchTree.cpp}
+    \caption{In Order Traversal of a BST in C++}
+    \label{figure:InOrder}
+\end{figure}
+
+This is a nice, simple function. We input a Node as the parameter on line 1 of Figure~\ref{figure:InOrder}. Skipping to line 9, we immediately recursively call the function, but for the left child. Then, we print the current Node, then we call the function again, for the right child.
+
+The function is recursive, so each time we go down a level, we call the function again. Our base case on line 3 through 6 returns when there is no child, and we go up a step to where we left off.
+
+
+The final function, the big one, is the search function for BST. Another recursive function: \texttt{search()}.      
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=187, lastline=210]{BinarySearchTree.cpp}
+    \caption{BST Search Function in C++}
+    \label{figure:Search}
+\end{figure}
+
+Figure~\ref{figure:Search} shows the code to \texttt{search()}. Given a starting Node and a target string, we either go left or right. On line 13, if target is less than our current Node, we print "L" and search the Node's left child.
+If target is greater than or equal to the Node's value, we search using the Node's right child.
+
+We keep recursing until we reach the base case on line 7. There are two options here: the Node pointer is empty (meaning the target was not found) or the target is equal to the Node's value. From here we complete the recursive function on line 9.
+
+Each search, on lines 16 or 22, we divide the data in half by either only checking the left children, or only checking the right children. The complexity of this search function is:
+\[O(log(n))\] 
+
+
+\pagebreak
+
+Back into the main file, let's see how it all plays out. Figure~\ref{figure:SearchMain} shows to creation of the 42 item sub array on lines 2 and 3. We go through all 42 items on line 9 and perform a search each time on line 15. Because we reset the comparisons each time, we can calculate for each item, and the average for all 42. The average number of comparisons is calculated and printed on lines 21 through 24.
+
+\begin{figure}[h] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=239, lastline=263]{BinarySearchTree.cpp}
+    \caption{BST Search Test in C++}
+    \label{figure:SearchMain}
+\end{figure}
+
+Figure~\ref{figure:SearchResults} displays 16 of the 42 search results. The average number of comparisons per search comes out to be 10.64 for the 42 items. Let's check the math:
+\[log(666) = 9.379\] 
+So, we were very close. The reason our comparisons were a bit higher is because 1) this is a random sample, and 2) our BST cannot be perfect. Because we put the items into the BST in a somewhat random order, it will not be optimized. If further algorithms were done to the tree to make it optimal, this number would go down, but only by very little.
+
+
+
+
+\begin{figure} [h]
+    \centering 
+    \renewcommand{\arraystretch}{1}
+    \begin{tabular}{||lrr||} 
+     \hline
+    
+    Item & Path & Comparisons \\
+     \hline
+    Kidnapper's Bag & RLLLRRRLL & 10\\
+    Eversol's Innebriator & LRLRLRRLRL & 11\\
+    Rope of climbing & RLRLRLRL & 9\\
+    Gloves of the Pugelist & LRRLRRLRL & 10\\
+    Book of the Past & LRLLRRLR & 9\\
+    Bag of holding type II & LRLLLRLRLR & 11\\
+    Tome of understanding +2 & RRRLLLLLLLLR & 13\\
+    Horn of goodness/evil & RLLLLLRR & 9\\
+    Totem of Hiding & RRRLLLLLLR & 11\\
+    Ring of the Merciful Blow & RLRL & 5\\
+    Gems of Darkness & LRRLL & 6\\
+    Ioun stone, vibrant purple prism & RLLL & 5\\
+    Carpet of flying, 6 ft. by 9 ft. & LRLRLLLRRRR & 12\\
+    Breast plate of the champion & LRLRLLLRL & 10\\
+    Throwing Stone & RRLRRRLRLR & 11\\
+    Amulet of health +6 & LLLRLR & 7\\
+     \hline
+
+    \end{tabular}
+    \caption{Items Searched, their Path, and Number of Comparisons}
+    \label{figure:SearchResults}
+\end{figure}
+
+\end{document}
