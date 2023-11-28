@@ -25,7 +25,6 @@ public:
     float totalPrice;
     int quantity;
     float unitPrice;
-    bool isAvailable;
 
     //Constructor
     Spice(string nameInput, float priceInput, int qtyInput){
@@ -33,12 +32,12 @@ public:
         totalPrice = priceInput;
         quantity = qtyInput;
         unitPrice = totalPrice / quantity;
-        isAvailable = false;
     }
 };
 
 
-//Return vector of Spices in unit price descending order (valuable->cheap)
+//Return vector of Spices in unit price descending order (most->least valuable)
+//Selection Sort
 vector<Spice*> sortValues(vector<Spice*> spices){
     int maxPosition;
     
@@ -163,43 +162,60 @@ int main(){
     spices = sortValues(spices);
 
 
-    //loop through all knapsacks 
+    //loop through all knapsack
     for (int sackNumber = 0; sackNumber < knapsackCapacities.size(); sackNumber++){
-        
-        //reset all spices to availible
-        for (int i = 0; i < spices.size(); i++){
-            spices[i]->isAvailable = true;
-        }
 
+        //knapsack variables
         int capacity = knapsackCapacities[sackNumber];
         int spiceNumber = 0;
         int sackQuantity = 0;
         float sackPrice = 0.0;
         bool isFull = false;
+        string scoopDetails = "";
 
-        //while loop to loop through all spices (in most valuable order)
-        while (! isFull && spiceNumber < spices.size()){
-            
+        //loop through spices (in most valuable order) until sack is full
+        while (!isFull && spiceNumber < spices.size()){
+            int scoops;
+
             //if there is enough space, take all of the spice
             if (spices[spiceNumber]->quantity <= capacity){
-                sackQuantity += spices[spiceNumber]->quantity;
+                scoops = spices[spiceNumber]->quantity;
+                sackQuantity += scoops;
                 sackPrice += spices[spiceNumber]->totalPrice;
             }
 
-            //if not, take what you can
+            //if not, take only what is availible
             else{
-                int remainingSpace = capacity - sackQuantity;
-                sackQuantity += remainingSpace;
-                //add only what you can
-                sackPrice += spices[spiceNumber]->unitPrice * remainingSpace;
+                scoops = capacity - sackQuantity;
+                sackQuantity += scoops;
+                sackPrice += spices[spiceNumber]->unitPrice * scoops;
             }
 
-            //check if sack is full
-            if(sackQuantity == capacity){
+            //check if sack is full (or at final spice)
+            if(sackQuantity == capacity || spiceNumber+1 == spices.size()){
                 isFull = true;
             }
+            
+            //gather all scoop details for printing
+            scoopDetails.append(to_string(scoops));
+            if (scoops == 1){
+                scoopDetails.append(" scoop of ");
+            }
+            else {
+            scoopDetails.append(" scoops of ");
+            }
+            scoopDetails.append(spices[spiceNumber]->name);
+            if (!isFull){
+                scoopDetails.append(", ");
+            }
+
+            //next Spice!
             spiceNumber ++;
         }
-        cout << "Capacity: " << capacity << "\n\tQuantity: " << sackQuantity << "\n\tPrice: $" << sackPrice << endl; //test line
-    }    
+
+        //print out capacity, price, and scoop details
+        std::cout << "Knapsack of capacity " << capacity;
+        std::cout << " is worth " << sackPrice << " quatloos";
+        std::cout << " and contains " << scoopDetails << ".\n" << std::endl;
+    }   
 }
