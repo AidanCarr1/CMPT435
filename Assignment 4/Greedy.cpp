@@ -17,6 +17,27 @@ using namespace std;
 const string _FILE_NAME = "spice.txt";
 
 
+//SPICE CLASS
+class Spice {
+
+public:
+    string name;
+    float totalPrice;
+    int quantity;
+    float unitPrice;
+    bool isAvailable;
+
+    //Constructor
+    Spice(string nameInput, float priceInput, int qtyInput){
+        name = nameInput;
+        totalPrice = priceInput;
+        quantity = qtyInput;
+        unitPrice = totalPrice / quantity;
+        isAvailable = false;
+    }
+};
+
+
 //Main Program!
 //Read the file,
 
@@ -43,11 +64,14 @@ int main(){
 
         //IO duplicates final line, delete it
         fileCommands.pop_back(); 
+        fileLength--;
     }    
     else {}
     spiceFile.close();   
 
+    //create vectors for all information
     vector<int> knapsackCapacities;
+    vector<Spice*> spices;
 
 
     //INTERPRET ALL COMMANDS
@@ -87,9 +111,11 @@ int main(){
             string strQuantity = currentLine.substr(equalsIndex +2, colonIndex - equalsIndex-2);
             int quantity = std::stof(strQuantity);
 
-            std::cout << "Name: " << name << ". Total Price: $" << totalPrice << ". Quantity: " << quantity << "." << endl; //test line
+            //std::cout << "Name: " << name << ". Total Price: $" << totalPrice << ". Quantity: " << quantity << "." << endl; //test line
             
-            //create spice object? using data
+            //create Spice object using data
+            Spice* mySpice = new Spice(name, totalPrice, quantity);
+            spices.push_back(mySpice);
 
         }
 
@@ -102,7 +128,25 @@ int main(){
             knapsackCapacities.push_back(capacity);
 
         }
+
+        //error check
+        else {
+            std::cout << "ERROR on line " << line+1 << ":\n\t'" << currentLine << "'" << std::endl;
+        }
             
+    }
+
+    //sort spices in value order
+
+    //loop through all knapsack capacities 
+    for(int cap = 0; cap < knapsackCapacities.size(); cap++){
+
+        //reset all spices to availible
+
+        //while loop to loop through all spices (in most valueble order)
+            //take most possible spice, so to next spice 
+            //print?
+        //
     }
             
 }
