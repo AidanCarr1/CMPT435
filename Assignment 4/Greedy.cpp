@@ -99,7 +99,7 @@ int main(){
 
 
     //INTERPRET ALL COMMANDS
-    for(int line = 0; line < fileLength; line ++){
+    for (int line = 0; line < fileLength; line ++){
 
         //get line as a string, and find length
         string currentLine = fileCommands[line]; 
@@ -144,7 +144,7 @@ int main(){
         }
 
         //new knapsack size
-        else if (currentLine.compare(0,4,"knap") == 0){
+        else if (currentLine.compare(0,8,"knapsack") == 0){
             int equalsIndex = currentLine.find("=");
             string strCapacity = currentLine.substr(equalsIndex +2, strLength - equalsIndex -3);
             int capacity = std::stof(strCapacity);
@@ -163,15 +163,43 @@ int main(){
     spices = sortValues(spices);
 
 
-    //loop through all knapsack capacities 
-    for(int cap = 0; cap < knapsackCapacities.size(); cap++){
-        cout << endl;
+    //loop through all knapsacks 
+    for (int sackNumber = 0; sackNumber < knapsackCapacities.size(); sackNumber++){
+        
         //reset all spices to availible
+        for (int i = 0; i < spices.size(); i++){
+            spices[i]->isAvailable = true;
+        }
+
+        int capacity = knapsackCapacities[sackNumber];
+        int spiceNumber = 0;
+        int sackQuantity = 0;
+        float sackPrice = 0.0;
+        bool isFull = false;
 
         //while loop to loop through all spices (in most valuable order)
-            //take most possible spice, so to next spice 
-            //print?
-        //
-    }
+        while (! isFull && spiceNumber < spices.size()){
             
+            //if there is enough space, take all of the spice
+            if (spices[spiceNumber]->quantity <= capacity){
+                sackQuantity += spices[spiceNumber]->quantity;
+                sackPrice += spices[spiceNumber]->totalPrice;
+            }
+
+            //if not, take what you can
+            else{
+                int remainingSpace = capacity - sackQuantity;
+                sackQuantity += remainingSpace;
+                //add only what you can
+                sackPrice += spices[spiceNumber]->unitPrice * remainingSpace;
+            }
+
+            //check if sack is full
+            if(sackQuantity == capacity){
+                isFull = true;
+            }
+            spiceNumber ++;
+        }
+        cout << "Capacity: " << capacity << "\n\tQuantity: " << sackQuantity << "\n\tPrice: $" << sackPrice << endl; //test line
+    }    
 }
