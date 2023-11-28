@@ -38,8 +38,32 @@ public:
 };
 
 
+//Return vector of Spices in unit price descending order (valuable->cheap)
+vector<Spice*> sortValues(vector<Spice*> spices){
+    int maxPosition;
+    
+    for (int i = 0; i < spices.size() - 1; i++){
+        maxPosition = i;
+        
+        for (int j = i+1; j < spices.size(); j++){
+
+            //compare for alphabetical order
+            if (spices[j]->unitPrice > spices[maxPosition]->unitPrice){
+                maxPosition = j;
+            }
+        }
+        //swap
+        Spice* temporarySpice = spices[maxPosition];
+        spices[maxPosition] = spices[i];
+        spices[i] = temporarySpice;
+    }
+    return spices;
+}
+
+
+
 //Main Program!
-//Read the file,
+//Read the file, create Spices, create knapsacks, sort Spices, find optimal Spice combinations for each knapsack
 
 int main(){
 
@@ -132,18 +156,19 @@ int main(){
         //error check
         else {
             std::cout << "ERROR on line " << line+1 << ":\n\t'" << currentLine << "'" << std::endl;
-        }
-            
+        }      
     }
 
-    //sort spices in value order
+    //sort spices in most valuable order
+    spices = sortValues(spices);
+
 
     //loop through all knapsack capacities 
     for(int cap = 0; cap < knapsackCapacities.size(); cap++){
-
+        cout << endl;
         //reset all spices to availible
 
-        //while loop to loop through all spices (in most valueble order)
+        //while loop to loop through all spices (in most valuable order)
             //take most possible spice, so to next spice 
             //print?
         //
