@@ -15,6 +15,7 @@ using namespace std;
 
 //GLOBAL variables
 const string _FILE_NAME = "graphs2.txt";
+const int _INFINITY = 1000000007; 
 
 
 //Compare 2 strings for equality
@@ -61,11 +62,30 @@ public:
 };
 
 
-//GRAPH CLASS
+//EDGE CLASS
+class Edge {
+
+public:
+    //this makes the Graph directed
+    Vertex* from;
+    Vertex* to;
+    int weight;
+
+    //Constructor
+    Edge(Vertex* fromInput, Vertex* toInput, int weightInput){
+        from = fromInput;
+        to = toInput;
+        weight = weightInput;
+    }
+};
+
+
+//Direected GRAPH CLASS
 class Graph {
 
 public:
     vector<Vertex*> vertices;
+    vector<Edge*> edges;
     
     //constructor
     Graph(){
@@ -97,11 +117,11 @@ public:
         vertices.push_back(myVertex);
     }
 
-    //add edge
-    void addEdge(int index1, int index2){
-        //add neighbor for both Vertices
+    //add Edge
+    void addEdge(int index1, int index2, int weight){
         vertices[index1]->addNeighbor(vertices[index2]);
-        vertices[index2]->addNeighbor(vertices[index1]);
+        Edge* myEdge = new Edge(vertices[index1], vertices[index2], weight);
+        edges.push_back(myEdge);
     }
 };
 
@@ -186,6 +206,8 @@ int main(){
         //new edge
         else if (currentLine.compare(4,4,"edge") == 0){
             
+            //BOOKMARK
+
             //find first and second id
             int dashIndex = currentLine.find("-");
             string id1 = currentLine.substr(9, dashIndex - 10);
@@ -196,7 +218,7 @@ int main(){
             int index2 = myGraph.findVertexById(id2);
             
             //add edge in the graph using the Vertex indexes
-            myGraph.addEdge(index1, index2);
+            //myGraph.addEdge(index1, index2, weight);
         }
 
         //error check
