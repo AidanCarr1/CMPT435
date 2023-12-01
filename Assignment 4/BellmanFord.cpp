@@ -1,5 +1,5 @@
 // Aidan Carr
-// November 27, 2023
+// December 1, 2023
 // SSSP: Directed Graphs
 
 //Compiled using g++
@@ -119,9 +119,49 @@ public:
 
     //add Edge
     void addEdge(int index1, int index2, int weight){
-        vertices[index1]->addNeighbor(vertices[index2]);
-        Edge* myEdge = new Edge(vertices[index1], vertices[index2], weight);
-        edges.push_back(myEdge);
+        //only add edge if the Vertices exist in vertices vector
+        if (index1 != -1 && index2 != -1){
+            vertices[index1]->addNeighbor(vertices[index2]);
+            Edge* myEdge = new Edge(vertices[index1], vertices[index2], weight);
+            edges.push_back(myEdge);
+        }
+    }
+
+    //test line
+    //method not needed
+    //adjacency list
+    void printAsAdjacencyList(){
+        int size = vertices.size();
+    
+        std::cout << "\nGRAPH AS AN ADJACENCY LIST:\n" << std::endl;
+
+        for (int i = 0; i < size; i++){
+            //print line title
+            std::cout << "[" << vertices[i]->id << "]";
+            
+            //search and print i's neighbors
+            for (int j = 0; j < vertices[i]->neighbors.size(); j++){
+                std::cout << " " << vertices[i]->neighbors[j]->id;
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    //delete all Graph contents
+    void reset(){
+        //delete each Vertex
+        for (int i = 0; i < vertices.size(); i++){
+            delete vertices[i];
+        }
+        //reset the Vertices vector
+        vertices.clear();
+
+        //delete each Edge
+        for (int i = 0; i < edges.size(); i++){
+            delete edges[i];
+        }
+        //reset the Edges vector
+        edges.clear();
     }
 };
 
@@ -161,7 +201,7 @@ int main(){
     else {}
     graphsFile.close();   
 
-    //* //test lines
+    /* //test lines
     for(int i = 0; i < fileCommands.size(); i++){
         std::cout << fileCommands[i] << endl;
     }
@@ -190,6 +230,10 @@ int main(){
             if (! myGraph.isEmpty()){
                 
                 //process Graph
+                myGraph.printAsAdjacencyList(); //test line
+
+                //reset Graph object (+ Vector objects and Edge objects)
+                myGraph.reset();
 
             }
         }
@@ -206,19 +250,25 @@ int main(){
         //new edge
         else if (currentLine.compare(4,4,"edge") == 0){
             
-            //BOOKMARK
-
-            //find first and second id
+            //find first id
             int dashIndex = currentLine.find("-");
             string id1 = currentLine.substr(9, dashIndex - 10);
-            string id2 = currentLine.substr(dashIndex + 2, strLength);
+            
+            //find second id
+            int id2strLength = currentLine.substr(dashIndex+2, strLength-dashIndex-2).find(" ");
+            string id2 = currentLine.substr(dashIndex+2, id2strLength);
+
+            //find weight
+            int weightIndex = dashIndex+2+id2strLength;
+            string weightStr = currentLine.substr(weightIndex, strLength - weightIndex);
+            int weight = std::stof(weightStr);
 
             //find index of each id
             int index1 = myGraph.findVertexById(id1);
             int index2 = myGraph.findVertexById(id2);
             
             //add edge in the graph using the Vertex indexes
-            //myGraph.addEdge(index1, index2, weight);
+            myGraph.addEdge(index1, index2, weight);
         }
 
         //error check
