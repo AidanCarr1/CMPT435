@@ -15,7 +15,7 @@ using namespace std;
 
 //GLOBAL variables
 const string _FILE_NAME = "graphs2.txt";
-const int _INFINITY = 1000000007; 
+const int ALMOST_INFINITY = 1000000007; 
 
 
 //Compare 2 strings for equality
@@ -48,6 +48,10 @@ public:
     string id;
     bool isProcessed;
     vector<Vertex*> neighbors; //array of neighbors
+    
+    //for Bellman Ford:
+    int distance;
+    Vertex* predecessor;
 
     //Constructor
     Vertex(string idInput){
@@ -163,7 +167,63 @@ public:
         //reset the Edges vector
         edges.clear();
     }
+
+    //Bellman Ford Algorithm
+    bool bellmanFord(int sourceVectorIndex){
+
+        //INIT-SINGLE SOURCE
+        //for every Vertex...
+        for (int v = 0; v < vertices.size(); v++){
+            vertices[v]->distance = ALMOST_INFINITY;
+            vertices[v]->predecessor = nullptr;
+        }
+        //distance from start to yourself = 0
+        vertices[sourceVectorIndex]->distance = 0;
+
+        //loop through all Vertices
+        for (int i = 0; i < vertices.size(); i++){
+            
+            //loop through all Edges
+            for(int e = 0; e < edges.size(); e++){
+
+                //variables for RELAX
+                Vertex* fromV = edges[e]->from;
+                Vertex* toU = edges[e]->to;
+                int weight = edges[e]->weight;
+
+                //RELAX
+                //if previously defined distance > new found distance, appoint new path
+                if (fromV->distance > toU->distance + weight){
+                    fromV->distance = toU->distance + weight;
+                    fromV->predecessor = toU;
+                }
+            }
+        }
+
+        //loop through Edges to check for negative weight cycles
+        for(int e = 0; e < edges.size(); e++){
+            
+            //variables for negative weight cycle check
+            Vertex* fromV = edges[e]->from;
+            Vertex* toU = edges[e]->to;
+            int weight = edges[e]->weight;
+
+            if (fromV->distance > toU->distance + weight){
+                return false;
+            }
+        }
+        //bellman ford complete!
+        return true;
+    }
 };
+
+
+
+
+
+
+
+
 
 
 //Main Program!
@@ -230,7 +290,14 @@ int main(){
             if (! myGraph.isEmpty()){
                 
                 //process Graph
-                myGraph.printAsAdjacencyList(); //test line
+                //myGraph.printAsAdjacencyList(); //test line
+                if (myGraph.bellmanFord(0)){
+                    //print Bellman Ford output
+                    cout << "Ford possible!" <<endl;
+                }
+                else {
+                    //print error message
+                }
 
                 //reset Graph object (+ Vector objects and Edge objects)
                 myGraph.reset();
