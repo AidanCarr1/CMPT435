@@ -15,7 +15,7 @@ using namespace std;
 
 //GLOBAL variables
 const string _FILE_NAME = "graphs2.txt";
-const int ALMOST_INFINITY = 1000000007; 
+const int ALMOST_INFINITY = 100000000; 
 
 
 //Compare 2 strings for equality
@@ -168,6 +168,7 @@ public:
         edges.clear();
     }
 
+
     //Bellman Ford Algorithm
     bool bellmanFord(int sourceVectorIndex){
 
@@ -181,21 +182,21 @@ public:
         vertices[sourceVectorIndex]->distance = 0;
 
         //loop through all Vertices
-        for (int i = 0; i < vertices.size(); i++){
+        for (int i = 1; i < vertices.size(); i++){
             
             //loop through all Edges
             for(int e = 0; e < edges.size(); e++){
 
                 //variables for RELAX
-                Vertex* fromV = edges[e]->from;
-                Vertex* toU = edges[e]->to;
+                Vertex* fromU = edges[e]->from;
+                Vertex* toV = edges[e]->to;
                 int weight = edges[e]->weight;
 
                 //RELAX
                 //if previously defined distance > new found distance, appoint new path
-                if (fromV->distance > toU->distance + weight){
-                    fromV->distance = toU->distance + weight;
-                    fromV->predecessor = toU;
+                if (toV->distance > fromU->distance + weight){
+                    toV->distance = fromU->distance + weight;
+                    toV->predecessor = fromU;
                 }
             }
         }
@@ -204,16 +205,26 @@ public:
         for(int e = 0; e < edges.size(); e++){
             
             //variables for negative weight cycle check
-            Vertex* fromV = edges[e]->from;
-            Vertex* toU = edges[e]->to;
+            Vertex* fromU = edges[e]->from;
+            Vertex* toV = edges[e]->to;
             int weight = edges[e]->weight;
 
-            if (fromV->distance > toU->distance + weight){
+            if (toV->distance > fromU->distance + weight){
                 return false;
             }
         }
         //bellman ford complete!
         return true;
+    }
+
+
+    //print bellman ford
+    void printBellmanFord(int startIndex){
+        for (int endIndex = 1; endIndex < vertices.size(); endIndex ++){
+            cout << vertices[startIndex]->id << " -> " << vertices[endIndex]->id;
+            cout << " cost is " << vertices[endIndex]->distance << endl;
+            //while ()
+        }
     }
 };
 
@@ -294,6 +305,7 @@ int main(){
                 if (myGraph.bellmanFord(0)){
                     //print Bellman Ford output
                     cout << "Ford possible!" <<endl;
+                    myGraph.printBellmanFord(0);
                 }
                 else {
                     //print error message
