@@ -84,7 +84,61 @@ public:
 };
 
 
-//Direected GRAPH CLASS
+//NODE CLASS, used in Stack class
+class Node {
+
+public:
+    Vertex* content;
+    Node* next;
+
+    //Constructors
+    Node(Vertex* input){
+        content = input;
+        next = nullptr;
+    }
+};
+
+
+//STACK CLASS
+class Stack{
+
+public:
+    Node* top;
+
+    //Constructor
+    Stack(){
+        top = nullptr;
+    }
+
+    //METHODS
+    //return true if Empty
+    bool isEmpty(){
+        if (top == nullptr){
+            return true;
+        }
+        return false;
+    }
+
+    //push/add to the top
+    void push(Node* newTop){
+        newTop->next = top;
+        top = newTop;
+    }
+
+    //retrieve from the top
+    string pop(){
+        //cant pop if there is nothing to pop
+        if (isEmpty()){
+            return "EMPTY STACK";
+        }
+        string popping = top->content->id;
+        top = top->next;
+        return popping;
+    }
+};
+
+
+//Directed GRAPH CLASS
 class Graph {
 
 public:
@@ -222,8 +276,12 @@ public:
     void printBellmanFord(int startIndex){
         for (int endIndex = 1; endIndex < vertices.size(); endIndex ++){
             cout << vertices[startIndex]->id << " -> " << vertices[endIndex]->id;
-            cout << " cost is " << vertices[endIndex]->distance << endl;
-            //while ()
+            cout << " cost is " << vertices[endIndex]->distance << "; path: " << endl;
+            
+            //traverse predessors until the start is reached
+            Vertex* pathNode = vertices[endIndex];
+
+            while ()
         }
     }
 };
@@ -304,8 +362,9 @@ int main(){
                 //myGraph.printAsAdjacencyList(); //test line
                 if (myGraph.bellmanFord(0)){
                     //print Bellman Ford output
-                    cout << "Ford possible!" <<endl;
+                    std::cout << "Bellman Ford SSSP:" << std::endl;
                     myGraph.printBellmanFord(0);
+                    std::cout << std::endl;
                 }
                 else {
                     //print error message
