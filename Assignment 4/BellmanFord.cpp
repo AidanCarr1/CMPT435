@@ -1,5 +1,5 @@
 // Aidan Carr
-// December 1, 2023
+// December 2, 2023
 // SSSP: Directed Graphs
 
 //Compiled using g++
@@ -131,14 +131,14 @@ public:
     }
 
     //retrieve from the top
-    string pop(){
+    void pop(){
         //cant pop if there is nothing to pop
-        if (isEmpty()){
-            return "EMPTY STACK";
+        if (! isEmpty()){
+            string popping = top->content->id;
+            top = top->next;
+            std::cout << popping;
         }
-        string popping = top->content->id;
-        top = top->next;
-        return popping;
+        
     }
 };
 
@@ -283,23 +283,24 @@ public:
             std::cout << vertices[startIndex]->id << " -> " << vertices[endIndex]->id;
             std::cout << " cost is " << vertices[endIndex]->distance << "; path: " << std::endl;
             
-            //SOME ISSUE AROUND HERE CUASING AN ERROR
-            
+            //SOME ISSUE AROUND HERE CAUSING AN ERROR
+
             //name this path and push it to a Stack
             Vertex* pathNode = vertices[endIndex];
-            Stack* paths = new Stack();
-            paths->push(pathNode);
+            Stack* path = new Stack();
+            path->push(pathNode);
 
             //traverse predecessors, push to Stack until the start is reached
             while (pathNode != nullptr){
                 pathNode = pathNode->predecessor;
-                paths->push(pathNode);
+                path->push(pathNode);
             }
 
             //pop and print out the Stack
-            while (! paths->isEmpty()){
-                std::cout << " --> " << paths->pop();
-            }
+            //while (! path->isEmpty()){
+                //path->pop();
+                //std::cout << " --> ";
+            //}
 
 
         }
