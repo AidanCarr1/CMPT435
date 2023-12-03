@@ -119,7 +119,12 @@ public:
         return false;
     }
 
-    //push/add to the top
+    //push a Vertex to the top
+    void push(Vertex* newVertexTop){
+        Node* myNode = new Node(newVertexTop);
+        push(myNode);
+    }
+    //push a Node to the top
     void push(Node* newTop){
         newTop->next = top;
         top = newTop;
@@ -275,13 +280,28 @@ public:
     //print bellman ford
     void printBellmanFord(int startIndex){
         for (int endIndex = 1; endIndex < vertices.size(); endIndex ++){
-            cout << vertices[startIndex]->id << " -> " << vertices[endIndex]->id;
-            cout << " cost is " << vertices[endIndex]->distance << "; path: " << endl;
+            std::cout << vertices[startIndex]->id << " -> " << vertices[endIndex]->id;
+            std::cout << " cost is " << vertices[endIndex]->distance << "; path: " << std::endl;
             
-            //traverse predessors until the start is reached
+            //SOME ISSUE AROUND HERE CUASING AN ERROR
+            
+            //name this path and push it to a Stack
             Vertex* pathNode = vertices[endIndex];
+            Stack* paths = new Stack();
+            paths->push(pathNode);
 
-            while ()
+            //traverse predecessors, push to Stack until the start is reached
+            while (pathNode != nullptr){
+                pathNode = pathNode->predecessor;
+                paths->push(pathNode);
+            }
+
+            //pop and print out the Stack
+            while (! paths->isEmpty()){
+                std::cout << " --> " << paths->pop();
+            }
+
+
         }
     }
 };
