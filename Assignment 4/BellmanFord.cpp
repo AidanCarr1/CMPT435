@@ -1,5 +1,5 @@
 // Aidan Carr
-// December 2, 2023
+// December 3, 2023
 // SSSP: Directed Graphs
 
 //Compiled using g++
@@ -14,7 +14,7 @@ using namespace std;
 
 
 //GLOBAL variables
-const string _FILE_NAME = "graphs2.txt";
+const string FILE_NAME = "graphs2.txt";
 const int ALMOST_INFINITY = 100000000; 
 
 
@@ -47,7 +47,7 @@ class Vertex {
 public:
     string id;
     bool isProcessed;
-    vector<Vertex*> neighbors; //array of neighbors
+    vector<Vertex*> neighbors; //list of neighbors
     
     //for Bellman Ford:
     int distance;
@@ -130,15 +130,15 @@ public:
         top = newTop;
     }
 
+
     //retrieve from the top
     void pop(){
-        //cant pop if there is nothing to pop
+        //can only pop if there is something there
         if (! isEmpty()){
             string popping = top->content->id;
             top = top->next;
             std::cout << popping;
         }
-        
     }
 };
 
@@ -173,12 +173,14 @@ public:
         return vertices.empty();
     }
 
+
     //add Vertex
     void addVertex(string id){
         Vertex* myVertex = new Vertex(id);
         //add new Vertex to the list
         vertices.push_back(myVertex);
     }
+
 
     //add Edge
     void addEdge(int index1, int index2, int weight){
@@ -190,28 +192,10 @@ public:
         }
     }
 
-    //test line
-    //method not needed
-    //adjacency list
-    void printAsAdjacencyList(){
-        int size = vertices.size();
-    
-        std::cout << "\nGRAPH AS AN ADJACENCY LIST:\n" << std::endl;
-
-        for (int i = 0; i < size; i++){
-            //print line title
-            std::cout << "[" << vertices[i]->id << "]";
-            
-            //search and print i's neighbors
-            for (int j = 0; j < vertices[i]->neighbors.size(); j++){
-                std::cout << " " << vertices[i]->neighbors[j]->id;
-            }
-            std::cout << std::endl;
-        }
-    }
 
     //delete all Graph contents
     void reset(){
+        
         //delete each Vertex
         for (int i = 0; i < vertices.size(); i++){
             delete vertices[i];
@@ -281,38 +265,30 @@ public:
     void printBellmanFord(int startIndex){
         for (int endIndex = 1; endIndex < vertices.size(); endIndex ++){
             std::cout << vertices[startIndex]->id << " -> " << vertices[endIndex]->id;
-            std::cout << " cost is " << vertices[endIndex]->distance << "; path: " << std::endl;
+            std::cout << " cost is " << vertices[endIndex]->distance << "; path: ";
             
             //SOME ISSUE AROUND HERE CAUSING AN ERROR
 
             //name this path and push it to a Stack
             Vertex* pathNode = vertices[endIndex];
             Stack* path = new Stack();
-            path->push(pathNode);
 
             //traverse predecessors, push to Stack until the start is reached
             while (pathNode != nullptr){
-                pathNode = pathNode->predecessor;
                 path->push(pathNode);
+                pathNode = pathNode->predecessor;
             }
-
+            
             //pop and print out the Stack
-            //while (! path->isEmpty()){
-                //path->pop();
-                //std::cout << " --> ";
-            //}
-
-
+            path->pop();
+            while (! path->isEmpty()){
+                std::cout << " --> ";
+                path->pop();
+            }
+            std::cout << std::endl;
         }
     }
 };
-
-
-
-
-
-
-
 
 
 
@@ -326,7 +302,7 @@ int main(){
 
     //open the file
     std::ifstream graphsFile;
-    graphsFile.open(_FILE_NAME);
+    graphsFile.open(FILE_NAME);
     
     //create vector
     int fileLength = 0;
@@ -388,12 +364,11 @@ int main(){
                     std::cout << std::endl;
                 }
                 else {
-                    //print error message
+                    std::cout << "Bellman Ford SSSP not possible.\n" << std::endl;
                 }
 
                 //reset Graph object (+ Vector objects and Edge objects)
                 myGraph.reset();
-
             }
         }
 
@@ -406,7 +381,7 @@ int main(){
 
         }
 
-        //new edge
+        //new Edge
         else if (currentLine.compare(4,4,"edge") == 0){
             
             //find first id
@@ -426,7 +401,7 @@ int main(){
             int index1 = myGraph.findVertexById(id1);
             int index2 = myGraph.findVertexById(id2);
             
-            //add edge in the graph using the Vertex indexes
+            //add Edge in the graph using the Vertex indexes and weight
             myGraph.addEdge(index1, index2, weight);
         }
 
