@@ -1,5 +1,5 @@
 // Aidan Carr
-// December 3, 2023
+// December 4, 2023
 // SSSP: Directed Graphs
 
 //Compiled using g++
@@ -264,7 +264,7 @@ public:
     //print bellman ford
     void printBellmanFord(int startIndex){
         for (int endIndex = 1; endIndex < vertices.size(); endIndex ++){
-            std::cout << vertices[startIndex]->id << " -> " << vertices[endIndex]->id;
+            std::cout << vertices[startIndex]->id << " → " << vertices[endIndex]->id;
             std::cout << " cost is " << vertices[endIndex]->distance << "; path: ";
             
             //SOME ISSUE AROUND HERE CAUSING AN ERROR
@@ -282,7 +282,7 @@ public:
             //pop and print out the Stack
             path->pop();
             while (! path->isEmpty()){
-                std::cout << " --> ";
+                std::cout << " → ";
                 path->pop();
             }
             std::cout << std::endl;
