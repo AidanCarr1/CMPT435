@@ -47,9 +47,8 @@ class Vertex {
 public:
     string id;
     bool isProcessed;
-    vector<Vertex*> neighbors; //list of neighbors
     
-    //for Bellman Ford:
+    //for Bellman-Ford:
     int distance;
     Vertex* predecessor;
 
@@ -57,11 +56,6 @@ public:
     Vertex(string idInput){
         id = idInput;
         isProcessed = false;
-    }
-
-    //add a vertex neighbor
-    void addNeighbor(Vertex* newNeighbor){
-        neighbors.push_back(newNeighbor);
     }
 };
 
@@ -130,7 +124,6 @@ public:
         top = newTop;
     }
 
-
     //retrieve from the top
     void pop(){
         //can only pop if there is something there
@@ -186,7 +179,7 @@ public:
     void addEdge(int index1, int index2, int weight){
         //only add edge if the Vertices exist in vertices vector
         if (index1 != -1 && index2 != -1){
-            vertices[index1]->addNeighbor(vertices[index2]);
+            //vertices[index1]->addNeighbor(vertices[index2]);
             Edge* myEdge = new Edge(vertices[index1], vertices[index2], weight);
             edges.push_back(myEdge);
         }
@@ -212,7 +205,7 @@ public:
     }
 
 
-    //Bellman Ford Algorithm
+    //Bellman-Ford Algorithm
     bool bellmanFord(int sourceVectorIndex){
 
         //INIT-SINGLE SOURCE
@@ -256,12 +249,12 @@ public:
                 return false;
             }
         }
-        //bellman ford complete!
+        //Bellman-Ford complete!
         return true;
     }
 
 
-    //print bellman ford
+    //print Bellman-Ford
     void printBellmanFord(int startIndex){
         for (int endIndex = 1; endIndex < vertices.size(); endIndex ++){
             std::cout << vertices[startIndex]->id << " → " << vertices[endIndex]->id;
@@ -356,15 +349,14 @@ int main(){
             if (! myGraph.isEmpty()){
                 
                 //process Graph
-                //myGraph.printAsAdjacencyList(); //test line
                 if (myGraph.bellmanFord(0)){
-                    //print Bellman Ford output
-                    std::cout << "Bellman Ford SSSP:" << std::endl;
+                    //print Bellman-Ford output
+                    std::cout << "Bellman-Ford SSSP:" << std::endl;
                     myGraph.printBellmanFord(0);
                     std::cout << std::endl;
                 }
                 else {
-                    std::cout << "Bellman Ford SSSP not possible.\n" << std::endl;
+                    std::cout << "Bellman-Ford SSSP not possible.\n" << std::endl;
                 }
 
                 //reset Graph object (+ Vector objects and Edge objects)
