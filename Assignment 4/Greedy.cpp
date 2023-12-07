@@ -133,13 +133,10 @@ int main(){
             colonIndex = currentLine.find(";");
             string strQuantity = currentLine.substr(equalsIndex +2, colonIndex - equalsIndex-2);
             int quantity = std::stof(strQuantity);
-
-            //std::cout << "Name: " << name << ". Total Price: $" << totalPrice << ". Quantity: " << quantity << "." << endl; //test line
             
             //create Spice object using data
             Spice* mySpice = new Spice(name, totalPrice, quantity);
             spices.push_back(mySpice);
-
         }
 
         //new knapsack size
@@ -149,7 +146,6 @@ int main(){
             int capacity = std::stof(strCapacity);
             //add capacity to vector of knapsacks
             knapsackCapacities.push_back(capacity);
-
         }
 
         //error check

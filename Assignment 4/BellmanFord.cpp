@@ -179,7 +179,6 @@ public:
     void addEdge(int index1, int index2, int weight){
         //only add edge if the Vertices exist in vertices vector
         if (index1 != -1 && index2 != -1){
-            //vertices[index1]->addNeighbor(vertices[index2]);
             Edge* myEdge = new Edge(vertices[index1], vertices[index2], weight);
             edges.push_back(myEdge);
         }
@@ -260,8 +259,6 @@ public:
             std::cout << vertices[startIndex]->id << " → " << vertices[endIndex]->id;
             std::cout << " cost is " << vertices[endIndex]->distance << "; path: ";
             
-            //SOME ISSUE AROUND HERE CAUSING AN ERROR
-
             //name this path and push it to a Stack
             Vertex* pathNode = vertices[endIndex];
             Stack* path = new Stack();
@@ -320,12 +317,6 @@ int main(){
     else {}
     graphsFile.close();   
 
-    /* //test lines
-    for(int i = 0; i < fileCommands.size(); i++){
-        std::cout << fileCommands[i] << endl;
-    }
-    //*/
-
 
     //INTERPRET ALL COMMANDS
     for(int line = 0; line < fileLength; line ++){
@@ -364,16 +355,15 @@ int main(){
             }
         }
 
-        //new Vertex
+        //add Vertex
         else if (currentLine.compare(4,6,"vertex") == 0){
             string id = currentLine.substr(11, 11-strLength);
             
             //add Vertex to Graph by id
             myGraph.addVertex(id);
-
         }
 
-        //new Edge
+        //add Edge
         else if (currentLine.compare(4,4,"edge") == 0){
             
             //find first id
