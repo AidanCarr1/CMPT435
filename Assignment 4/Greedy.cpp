@@ -46,7 +46,7 @@ vector<Spice*> sortValues(vector<Spice*> spices){
         
         for (int j = i+1; j < spices.size(); j++){
 
-            //compare for alphabetical order
+            //compare for better unit price
             if (spices[j]->unitPrice > spices[maxPosition]->unitPrice){
                 maxPosition = j;
             }
@@ -57,6 +57,22 @@ vector<Spice*> sortValues(vector<Spice*> spices){
         spices[i] = temporarySpice;
     }
     return spices;
+}
+
+
+//create or add to a string of details that will be printed in the end
+void editPrintDetails(string scoopDetails, int scoops, vector<Spice*> spices, int spiceNumber, bool isFull){
+    scoopDetails.append(to_string(scoops));
+    if (scoops == 1){
+        scoopDetails.append(" scoop of ");
+    }
+    else {
+        scoopDetails.append(" scoops of ");
+    }
+    scoopDetails.append(spices[spiceNumber]->name);
+    if (!isFull){
+        scoopDetails.append(", ");
+    }
 }
 
 
@@ -169,11 +185,11 @@ int main(){
         bool isFull = false;
         string scoopDetails = "";
 
-        //loop through spices (in most valuable order) until sack is full
+        //loop through Spices (in most valuable order) until sack is full
         while (!isFull && spiceNumber < spices.size()){
             int scoops;
 
-            //if there is enough space, take all of the spice
+            //if there is enough space, take all of the Spice
             if (spices[spiceNumber]->quantity <= capacity){
                 scoops = spices[spiceNumber]->quantity;
                 sackQuantity += scoops;
@@ -193,17 +209,7 @@ int main(){
             }
             
             //gather all scoop details for printing
-            scoopDetails.append(to_string(scoops));
-            if (scoops == 1){
-                scoopDetails.append(" scoop of ");
-            }
-            else {
-            scoopDetails.append(" scoops of ");
-            }
-            scoopDetails.append(spices[spiceNumber]->name);
-            if (!isFull){
-                scoopDetails.append(", ");
-            }
+            editPrintDetails(scoopDetails, scoops, spices, spiceNumber, isFull);
 
             //next Spice!
             spiceNumber ++;

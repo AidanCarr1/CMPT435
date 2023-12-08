@@ -1,0 +1,532 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Assignment 4
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{Carr | page \thepage} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+% make code look nice
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{           
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2                    
+}
+
+%hopefully this fixes margins
+\usepackage[a4paper,
+            left=1in,
+            right=1in,
+            top=1in,
+            bottom=1in,
+            footskip=.25in]{geometry}
+
+\usepackage{blindtext}
+
+
+\lstset{style=mystyle}
+
+%------------------------------------------------
+%	TITLE SECTION
+%----------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2023 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	% Top horizontal rule
+   \huge Assignment Four: Bellman-Ford and Greedy Algorithms  \\
+   % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	% Bottom horizontal rule
+}
+
+\author{Aidan Carr \\ \normalsize Aidan.Carr1@Marist.edu}
+
+\date{\normalsize December 8, 2023} 	% Today's date.
+
+\begin{document}
+\maketitle % Print the title
+
+%----------------------------------------------------
+%   GRAPHS SECTION
+%-----------------------------------------------
+\section{Graphs}
+
+\subsection{What is a Directed Graph?}
+In Assignment 3, the concepts of undirected graphs were introduced. A directed Graph is, similarly, a collection of Vertices connected together with a series of edges. However, these Edges have a specified start and end Vertex. These Edges can have values appointed to them called weights. Below in Figure~\ref{figure:DirectedGraph}, each colored dot represents a Vertex and each arrow represents the directed Edge with a weight. 
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=8.5cm]{DirectedGraph.png}
+    \caption{A Directed Graph\footnotemark}
+    \label{figure:DirectedGraph}
+    
+\end{figure}
+\footnotetext{Image: https://www.educative.io/answers/directed-graphs-vs-undirected-graphs.}
+
+Imagine this Graph represents a map of a city. Each Vertex is a location, each Edge represents a road with the flow of traffic and the time it takes to travel that road. GPS applications can use Graphs to calculate to quickest or shortest path from one point to another.
+
+\subsection{Assignment Goals}
+Similar to Assignment 3, the first step will be to read the file--\href{https://www.labouseur.com/courses/algorithms/graphs2.txt}{graphs2.txt}. This file is filled with a few commands to create four different Graphs. For each Graph, a series of Vertices and a series of Edges will be created. A major difference between this assignment and the previous is the existence of the Edges class. This eliminates to need for known neighbors of Vertices.
+
+For each Graph, the goal of this assignment is to find the single source shortest paths (SSSP). This means finding the smallest weighted path from a start Vertex to every other Vertex. The Bellman-Ford algorithm will be used to find these shortest paths.  
+
+\pagebreak
+
+\subsection{Coding a Vertex Class}
+This Vertex class is a slight modification from Assignment 3's Vertex class.
+
+%vertex class
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=45, lastline=60]{BellmanFord.cpp}
+    \caption{Vertex Class in C++}
+    \label{figure:VertexClass}
+\end{figure}
+
+
+Check out Figure~\ref{figure:VertexClass}. Each Vertex object has an \texttt{id}, and an \texttt{isProcessed} variable. For the Bellman-Ford algorithm, \texttt{distance} will keep track of the total weight/cost/distance it has taken to get from the source Vertex to this one. The \texttt{predecessor} Vertex pointer will point to the previous Vertex in the path that has led to this one. These values will be filled in when the code runs through the Bellman-Ford algorithm.
+
+
+\subsection{Coding an Edge Class}
+
+
+%edge class
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=64, lastline=78]{BellmanFord.cpp}
+    \caption{Edge Class in C++}
+    \label{figure:EdgeClass}
+\end{figure}
+
+
+The Edge class is a new Class that was not made in Assignment 3. Lines 4 through 7 of Figure~\ref{figure:EdgeClass}  store the attributes for each Edge object. We have \texttt{from} and \texttt{to} Vector pointers, as well as a \texttt{weight} variable to store that. The constructor on line 10 uses inputs to appoint all three variables.
+
+\pagebreak
+
+
+
+\subsection{Coding a Graph Class}
+
+The Graph class's attributes on line 4 and 5 of Figure~\ref{figure:GraphClass1} are \texttt{vertices} and \texttt{edges}. Each is a vector of the respective object pointers. The constructor on line 8 does not appoint any value to these attributes. \texttt{findVertexById()} on line 13 takes a target string \texttt{id} as input and traverses the vector of Vertices to find the Vertex pointer. When found on line 17, the index is returned. If not, \texttt{-1} is returned on line 22.
+
+The \texttt{isEmpty()} function returns true or false based on if the \texttt{vertices} vector is empty or not.
+
+%graph class 1
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=140, lastline=169]{BellmanFord.cpp}
+    \caption{Graph Class Methods in C++}
+    \label{figure:GraphClass1}
+\end{figure}
+
+
+Figure~\ref{figure:GraphClass2} below shows two more Graph methods. \texttt{addVertex()} on line 2 creates a Vertex object using the given \texttt{id} and adds it the the \texttt{vertiecs} vector.
+
+On line 10, \texttt{addEdge()} is defined where it first checks if the indexes are valid Vertices on line 12. If so, an Edge is created with the given information, this is put into the \texttt{edges} vector.
+
+%graph class 2
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=170, lastline=185]{BellmanFord.cpp}
+    \caption{More Graph Class Methods in C++}
+    \label{figure:GraphClass2}
+\end{figure}
+
+
+\pagebreak
+
+The final Graph method in Figure~\ref{figure:GraphClass3} is the \texttt{reset()} function. This method deletes every Vertex in the \texttt{vertices} vector on lines 5 through 7 and deletes every Edge on lines 12 through 14. Both vectors all also cleared as well on lines 9 and 16. 
+
+%graph class 3
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=188, lastline=204]{BellmanFord.cpp}
+    \caption{Reset the Graph Method in C++}
+    \label{figure:GraphClass3}
+\end{figure}
+
+The final two Graphs methods are \texttt{bellmanFord()} and \texttt{printBellmanFord()}. These will be covered later on.
+
+
+\subsection{Reading and Interpreting the File}
+    
+In the main function of the program, the first step is to read the file into a vector. This process has been explained in Assignment 3. Looking at lines 12 through 15 of Figure~\ref{figure:ReadFile}, after the \texttt{fileCommands} vector has been created, the final element is removed, and the line \texttt{"new graph"} is added to the end. The \texttt{new graph} command will be an indicator that the graph is complete and ready for the Bellman-Ford process.
+
+
+%graph class 3
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=303, lastline=318]{BellmanFord.cpp}
+    \caption{Reading the File in C++}
+    \label{figure:ReadFile}
+\end{figure}
+
+
+
+
+\pagebreak
+
+
+
+%graphs2.txt
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=sql, firstline=1, lastline=17]{graphs2.txt}
+    \caption{Example Graph Commands}
+    \label{figure:GraphsTXT}
+\end{figure}
+
+Figure~\ref{figure:GraphsTXT} above shows a snippet of commands to be interpreted in the assignment. The difference here compared to Assignment 3 is the addition of the weight at the end of the \texttt{add edge} command. The other three commands (\texttt{---- comment}, \texttt{new graph}, and \texttt{add vertex}) remain the same.
+
+Figure~\ref{figure:DirectedOutput} represents the Graph that the commands build. Vertex \texttt{"1"} is the first vertex created, so it will be the source Vertex for SSSP.
+
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=7cm]{DirectedOutput.png}
+    \caption{Example Graph Visualization\footnotemark}
+    \label{figure:DirectedOutput}
+    
+\end{figure}
+\footnotetext{Image: https://www.labouseur.com/courses/algorithms/Bellman-Ford.pdf.}
+
+
+When adding a Vertex, the string \texttt{id} is retrieved from the file and a new object is created with the \texttt{addVertex()} method in Figure~\ref{figure:AddVertex}.
+
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=360, lastline=366]{BellmanFord.cpp}
+    \caption{Add Vertex Command in C++}
+    \label{figure:AddVertex}
+\end{figure}
+
+\pagebreak
+
+Adding an Edge requires a bit more code. A lot of lines are used to find the exact placement of \texttt{id1}, \texttt{id2}, and \texttt{weight}. These are found using substrings and parsing on lines 4 through 15. The indexes for the \texttt{id}s are found on lines 18 and 19. Then, on line 22, the \texttt{addEdge()} method from earlier is called with our newly found data from this line.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=368, lastline=390]{BellmanFord.cpp}
+    \caption{Add Edge Command in C++}
+    \label{figure:AddEdge}
+\end{figure}
+
+The last command-- \texttt{new graph}-- does either one of two options. First, if this is the first Graph, \texttt{isEmpty()} returns true on line 5 and skips this whole sequence. If the Graph is populated, the Graph is processed. Bellman-Ford is called on line 8. If the algorithm produces a satisfactory result, it will be printed on lines 10 through 12 using the \texttt{printBellmanFord()} method. If not, line 15 prints out a failure message. The Graph is then reset on line 19, allowing the new Graph to be made.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=338, lastline=357]{BellmanFord.cpp}
+    \caption{New Graph Command in C++}
+    \label{figure:NewGraph}
+\end{figure}
+
+\pagebreak
+
+\subsection{The Bellman-Ford Algorithm}
+
+An explanation of the Bellman-Ford Algorithm. We let the algorithm know the source vector as input on line 2 in Figure~\ref{figure:BellmanFord}. The first step in the algorithm is to set each Vertex's distance to \texttt{ALMOST\_INFINTY}, a very large number. We also appoint each Vertex's \texttt{predecessor} to \texttt{nullptr} because currently we have not found any path, therefore no distance to any Vertex. And on line 11 the distance of the source Vector is set to 0 because no traveling is needed to stay in the same place.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=207, lastline=253]{BellmanFord.cpp}
+    \caption{Bellman-Ford Algorithm in C++}
+    \label{figure:BellmanFord}
+\end{figure}
+
+Line 14 of Figure~\ref{figure:BellmanFord} begins a loop of all Vertices (except the source) and line 17 loops through all of the Edges for each Vector. This is the RELAX section of the algorithm where we search for shorter paths. Line 26 is crucial; here, we check if the distance of the \texttt{to} Vertex in this particular Edge is greater than the distance of the \texttt{from} Vertex plus the Edge \texttt{weight}. The algorithm is checking if the previously found path is longer than the new path. If a shorter path is found, lines 27 and 28 are executed, updating the \texttt{to} Vertex's \texttt{distance} and \texttt{predecessor}.
+
+Once all the Vertices have been checked, the last step is to check for negative weight cycles. A negative weight cycle occurs when a Vertex manages to use Edges to loop back to itself with a negative distance. Graphs with negative weight cycles could then have paths of infinitely negative size. Line 41 checks if each Vertex's distance is greater than each Edge's \texttt{from} Vertex pointing to it, plus the weight. \texttt{bellmanFord()} returns false if just one negative weight cycle is found.
+
+Some people may say: "B- b- but, I love negative weight cycles!" But it is important to remember the effects of negative weight cycles in a SSSP Graph. Check out Figure~\ref{figure:NegativeWeight}.
+
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=8.5cm]{BlackHole.jpeg}
+    \caption{The Outcome of a Graph with Negative Weight Cycles\footnotemark}
+    \label{figure:NegativeWeight}
+    
+\end{figure}
+\footnotetext{Image: https://universe.nasa.gov/black-holes/anatomy/.}
+
+\subsection{Printing Bellman-Ford}
+The Bellman-Ford Algorithm modifies the Graph's Vertices and returns true or false if the algorithm is possible. To print the findings, a new Graph method will be created: \texttt{printBellmanFord()}. Check out Figure~\ref{figure:PrintBellmanFord}. On line 3, all Vertices are looped through (excluding the source Vertex). Within each loop, the path start, finish, and distance are all printed on lines 4 and 5. 
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=1, lastline=25]{printBF.txt}
+    \caption{Printing Bellman-Ford Method in C++}
+    \label{figure:PrintBellmanFord}
+\end{figure}
+
+A \texttt{pathNode} and Stack are created on lines 8 and 9. This is because we will move along the path backwards (\texttt{to} back to \texttt{from}), and a Stack will help reverse this order. Looping on line 12 until we reach the source Vertex, we keep pushing \texttt{pathNode}s. Once all path points have been added, on lines 18 through 23, the path is popped in reverse order, printing out the path from the source to the particular Vertex. To read more about Stacks, check out Assignment 1. Or, Google it or something.
+
+
+\pagebreak
+
+\subsection{Bellman-Ford Complexity and Results}
+The complexity of Bellman-Ford is easy to calculate. Referring back to the Bellman-Ford algorithm in Figure~\ref{figure:BellmanFord}, there is a nested for loop. The outer loop on line 14 repeats for every Vertex in the Graph, and the inner loop on line 17 loops through all the Edges. 
+
+This section of the algorithm is repeated for the number of Vertices multiplied by the number of Edges. Therefore, the time complexity can be represented as:
+\[O(|V|*|E|)\]
+
+The Bellman-Ford outputs of the Graphs created in \texttt{graphs2.txt}, are shown in Figure~\ref{figure:BFOutupt} below. Graph 1 represents the the SSSPs from the Graph in Figure~\ref{figure:DirectedOutput}.
+
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=13cm]{BFOutputs.png}
+    \caption{Bellman-Ford Outputs\footnotemark}
+    \label{figure:BFOutupt}
+    
+\end{figure}
+
+
+
+\section{Greedy Algorithms}
+
+\subsection{The Fractional Knapsack Problem}
+
+Imagine you have a knapsack the can only hold a certain volume. Bringing this knapsack to a heist will allow you to fill it to the brim and leave. But how can you leave with the most value?
+
+This section of the assignment attempts to find the best options for different knapsack sizes. The items we are stealing are scoops of differently valued spices. The method of taking the most value is to take all or as much as possible of the most valuable spice. Then, the next most valuable spice is scooped, then the next... until the sack is full.
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=9cm]{spice.jpg}
+    \caption{A Generous Scoop of Spice, Dune (2021)\footnotemark}
+    \label{figure:DuneSpice}
+    
+\end{figure}
+\footnotetext{Image: https://news.cnrs.fr/articles/dissecting-the-spice-of-dune.}
+
+\pagebreak
+
+\subsection{Coding a Spice Class}
+This simple Spice class in Figure~\ref{figure:SpiceClass} has some attributes with a constructor. The constructor on line 11 sets a \texttt{name}, \texttt{totalPrice}, and \texttt{quantity} from the parameters. From this information, a fourth variable \texttt{unitPrice} is calculated on line 15. This number will be used to determine the particular Spice's value. A higher unit price will be more valuable for the heist.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=20, lastline=36]{Greedy.cpp}
+    \caption{Spice Class in C++}
+    \label{figure:SpiceClass}
+\end{figure}
+
+\subsection{Reading the Spice File}
+The assignment requires us to read a \texttt{spice.txt} file, shown in Figure~\ref{figure:SpiceTEXT}. There are only two types of command lines. One defines a new Spice object (lines 4 through 7), and one defines a knapsack capacity (lines 10 through 14).
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=sql, firstline=1, lastline=14]{spice.txt}
+    \caption{Spice Text File}
+    \label{figure:SpiceTEXT}
+\end{figure}
+
+Just like earlier in this assignment, and in Assignment 3, the lines of the text file will be read into a vector. Check out previous assignments for mode detailed code listings.
+
+\pagebreak
+
+Within the main file, Figure~\ref{figure:SpiceLoop} shows when two vectors are created on lines 2 and 3. \texttt{knapsackCapacites} will be used to store the integer values of the knapsacks' capacities. \texttt{spices} will store all the Spices in one place.
+
+Line 7 loops through all lines of the text file. Lines 13 through 19 deal with the comment command and empty lines.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=95, lastline=113]{Greedy.cpp}
+    \caption{Looping the Spice Commands in C++}
+    \label{figure:SpiceLoop}
+\end{figure}
+
+
+Still inside the for loop in Figure~\ref{figure:ReadSpice}, the code checks if the current command is a new Spice command. If so, lines 4 through 7 uses substrings and indexing to get the \texttt{name} of the Spice. Lines 9 through 14 gets the \texttt{totalPrice} using a similar method. \texttt{quantity} is found on lines 16 through 21, then the Spice object is created using the variables found from the text file on line 24. This object is put into the \texttt{spices} vector for safe keeping.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=1, lastline=26]{newSpice.txt}
+    \caption{Reading a New Spice Command in C++}
+    \label{figure:ReadSpice}
+\end{figure}
+
+
+\pagebreak
+
+Next, we will will check if the command is a knapsack capacity. If so, lines 3 through 5 find the integer value for this new \texttt{capacity}, then put it in the \texttt{knapsackCapacities} vector for safe keeping on line 7.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=29, lastline=36]{newSpice.txt}
+    \caption{Reading a Knapsack Command in C++}
+    \label{figure:ReadKnapsack}
+\end{figure}
+
+
+\subsection{Coding a Greedy Algorithm}
+Once the loop through commands is completed, we must sort the \texttt{spices} vector in descending order of unit price. This makes the first Spice the most valuable, and the last the least valuable. After calling \texttt{spices = sortValues(spices);} in the main function, the program comes to \texttt{sortValues()} in Figure~\ref{figure:Sort}. This is a modified Selection Sort code. \texttt{maxPosition} is found in every loop, then swapped on lines 15 through 17 with the current Spice.
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=1, lastline=20]{sortSpice.txt}
+    \caption{Sort Function in C++}
+    \label{figure:Sort}
+\end{figure}
+
+Back to the main program in Figure~\ref{figure:GreedyStart}, we begin preparing for the greedy algorithm by looping through all of the knapsack capacities on line 2. Then a few variables are initialized. \texttt{capacity} is capacity of the current knapsack, \texttt{spiceNumber} is a counter to be incremented, \texttt{sackQuantity} is the current number of scoops in the knapsack, and \texttt{scoopDetails} will be an ongoing sentence for output purposes.
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=5, lastline=15]{greedyAlg.txt}
+    \caption{Preparing for the Greedy Algorithm in C++}
+    \label{figure:GreedyStart}
+\end{figure}
+
+\pagebreak
+
+Figure~\ref{figure:GreedyAlgorithm} shows the greedy algorithm. Using a while loop on line 2, we check the the knapsack has space and we still have spaces left to steal. Remember we are looping through the spices in value order. If there is enough room to take all of the Spice, execute lines 6 through 10. Here, \texttt{scoops}, \texttt{sackQuantity}, and \texttt{sackPrice} are all updated. 
+
+If we can only take a portion of Spice, execute lines 13 through 17. Here, the sack \texttt{scoops} and \texttt{sackQuantity} are maxed out. On line 16, the \texttt{sackPrice} is updated to add the \texttt{unitPrice} multiplied by \texttt{scoops}.
+
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=16, lastline=45]{greedyAlg.txt}
+    \caption{Greedy Spice Heist Algorithm in C++}
+    \label{figure:GreedyAlgorithm}
+\end{figure}
+
+
+Then the algorithm reevaluates the \texttt{isFull} variable in case the sack is now full on line 20. The function \texttt{editPrintDetails()} is called on line 25. This function will create and edit a string that will be printed out at the end of heist. Finally, the \texttt{spiceNumber} is incremented on line 28, moving on to the next Spice.
+
+Below, in Figure~\ref{figure:PrintDetails}, \texttt{editPrintDetails()} adds details about the most recent Spice taken onto the ever-changing \texttt{scoopDetails} string. This function checks if "scoops" should be plural on lines 4 through 9, and if there are more scoops to come on lines 11 and 12.
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=1, lastline=14]{editPrintDetails.txt}
+    \caption{Print Details Function in C++}
+    \label{figure:PrintDetails}
+\end{figure}
+
+\pagebreak
+
+Looking at the greedy algorithm in Figure~\ref{figure:GreedyAlgorithm}, there is only one while loop. This loops through the number of Spices, in order to pick multiple Spices for our knapsack. The complexity of this section of the greedy algorithm is:
+\[O(n)\]
+This is because we loop through everything once. But, this is not the entire story. Before the greedy algorithm, the \texttt{spices} vector had to be sorted by \texttt{unitPrice}. Because of this, the time complexity of greedy algorithm is bounded by:
+\[O(n^2)\]
+Because there is a nested for loop in the Selection Sort algorithm, this overpowers the smaller complexity of the greedy section. If a less time inducing sort was used (like Merge Sort), the complexity of the whole greedy algorithm would again be equal to the sorting method's complexity.
+
+So, the greedy algorithm of the Spice heist is determined by the complexity of the Spice value sorting method.
+
+\subsection{The Results of a Greedy Spice Heist}
+
+
+\begin{figure}[ht] 
+    \centering 
+    \lstinputlisting[language=c++, firstline=46, lastline=49]{greedyAlg.txt}
+    \caption{Printing Out the Results in C++}
+    \label{figure:GreedyFinalPrint}
+\end{figure}
+
+
+
+One final piece of code can be found in Figure~\ref{figure:GreedyFinalPrint}, at the end of the main function. Each knapsack capacity and price is printed, followed by the sack's details on line 4.
+
+The output of \texttt{spice.txt} will produce the output found in Figure~\ref{figure:KnapsackOutput}.
+
+\begin{figure}[h] 
+    \centering 
+    \includegraphics[width=13cm]{KnapsackOutput.png}
+    \caption{Greedy Algorithm Outputs\footnotemark}
+    \label{figure:KnapsackOutput}
+    
+\end{figure}
+
+
+\end{document}
